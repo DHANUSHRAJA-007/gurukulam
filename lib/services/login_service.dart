@@ -8,29 +8,7 @@ class LoginService {
   // Get departments by username
   // ==========================================
 
-  Future<Map<String, dynamic>> getDepartments(
-    String username,
-  ) async {
-    final uri = Uri.parse(
-      '$baseUrl/get_user_department.php'
-      '?username=${Uri.encodeComponent(username)}',
-    );
-
-    final response = await http.get(uri);
-
-    if (response.statusCode != 200) {
-      throw Exception(
-        'Server error: ${response.statusCode}',
-      );
-    }
-
-    return jsonDecode(response.body)
-        as Map<String, dynamic>;
-  }
-
-  // ==========================================
-  // Login
-  // ==========================================
+  
 
   Future<Map<String, dynamic>> login({
     required String username,

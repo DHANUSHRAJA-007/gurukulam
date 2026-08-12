@@ -73,45 +73,7 @@ class LoginViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ==========================================
-  // Load Departments
-  // ==========================================
-
-  Future<void> loadDepartments(
-    String username,
-  ) async {
-    if (username.trim().isEmpty) {
-      _errorMessage =
-          'Please enter username first';
-
-      notifyListeners();
-      return;
-    }
-
-    _isLoadingDepartments = true;
-    _errorMessage = null;
-
-    notifyListeners();
-
-    try {
-      _departments =
-          await _repository.getDepartments(
-        username.trim(),
-      );
-
-      // Reset previous selection
-      _selectedDepartmentId = null;
-    } catch (e) {
-      _errorMessage =
-          _getUserFriendlyError(
-        e.toString(),
-      );
-    } finally {
-      _isLoadingDepartments = false;
-
-      notifyListeners();
-    }
-  }
+  
 
   // ==========================================
   // Login
