@@ -3,21 +3,41 @@ class MasterModel {
   final String name;
   final bool status;
 
-  MasterModel({required this.id, required this.name, required this.status});
+  MasterModel({
+    required this.id,
+    required this.name,
+    required this.status,
+  });
 
-  factory MasterModel.fromJson(Map<String, dynamic> json) {
+  factory MasterModel.fromJson(
+    Map<String, dynamic> json,
+  ) {
     return MasterModel(
-      id: json['id'] as int,
-      name: json['name'] as String,
-      status: json['status'] == 1,
+      id: int.tryParse(
+            json['id'].toString(),
+          ) ??
+          0,
+
+      name: json['name']?.toString() ?? '',
+
+      status:
+          json['status'].toString() == '1',
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'id': id, 'name': name, 'status': status ? 1 : 0};
+    return {
+      'id': id,
+      'name': name,
+      'status': status ? 1 : 0,
+    };
   }
 
-  MasterModel copyWith({int? id, String? name, bool? status}) {
+  MasterModel copyWith({
+    int? id,
+    String? name,
+    bool? status,
+  }) {
     return MasterModel(
       id: id ?? this.id,
       name: name ?? this.name,

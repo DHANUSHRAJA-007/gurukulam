@@ -1,8 +1,9 @@
 <?php
 
-header("Content-Type: application/json");
-
+require_once "cors.php";
 require_once "conn.php";
+
+header("Content-Type: application/json");
 
 $masters = [
 
@@ -46,6 +47,8 @@ $master = $_GET["master"] ?? "";
 
 if (!isset($masters[$master])) {
 
+    http_response_code(400);
+
     echo json_encode([
         "success" => false,
         "message" => "Invalid master type"
@@ -59,13 +62,21 @@ $column = $masters[$master]["column"];
 
 try {
 
-    // Only active records
     $stmt = $conn->prepare(
-        "SELECT id, `$column`, status
+        "SELECT
+            id,
+            `$column` AS name,
+            status
          FROM `$table`
          WHERE status = 1
          ORDER BY id DESC"
     );
+
+    if (!$stmt) {
+        throw new Exception(
+            "Prepare failed: " . $conn->error
+        );
+    }
 
     $stmt->execute();
 
@@ -74,7 +85,12 @@ try {
     $data = [];
 
     while ($row = $result->fetch_assoc()) {
-        $data[] = $row;
+
+        $data[] = [
+            "id" => (int)$row["id"],
+            "name" => $row["name"],
+            "status" => (int)$row["status"]
+        ];
     }
 
     echo json_encode([
@@ -89,7 +105,7 @@ try {
 
     echo json_encode([
         "success" => false,
-        "message" => "Server error"
+        "message" => "Server error: " . $e->getMessage()
     ]);
 }
 

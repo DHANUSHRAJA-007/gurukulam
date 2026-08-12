@@ -8,22 +8,37 @@ class MasterRepository {
     return await _service.getMasters(tableName);
   }
 
-  Future<MasterModel> addMaster(String tableName, String name) async {
-    return await _service.addMaster(tableName, name);
-  }
+  Future<bool> addMaster({
+  required String masterType,
+  required String value,
+}) async {
+  return await _service.insertMaster(
+    masterType: masterType,
+    value: value,
+  );
+}
 
-  Future<MasterModel> updateMaster(
-    String tableName,
-    int id,
-    String name,
-    bool status,
-  ) async {
-    return await _service.updateMaster(tableName, id, name, status);
-  }
+  Future<bool> updateMaster({
+  required String masterType,
+  required int id,
+  required String value,
+}) async {
+  return await _service.updateMaster(
+    masterType: masterType,
+    id: id,
+    value: value,
+  );
+}
 
-  Future<void> deleteMaster(String tableName, int id) async {
-    await _service.deleteMaster(tableName, id);
-  }
+  Future<bool> deleteMaster({
+  required String masterType,
+  required int id,
+}) async {
+  return await _service.deleteMaster(
+    masterType: masterType,
+    id: id,
+  );
+}
 
   Future<void> toggleStatus(String tableName, int id, bool status) async {
     await _service.toggleStatus(tableName, id, status);

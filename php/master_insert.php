@@ -1,8 +1,15 @@
 <?php
 
+
+require_once "cors.php";
+require_once "conn.php";
+
 header("Content-Type: application/json");
 
-require_once "conn.php";
+if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
+    http_response_code(200);
+    exit();
+}
 
 // =====================================================
 // MASTER TABLE CONFIGURATION

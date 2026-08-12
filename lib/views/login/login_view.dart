@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gurukulam/views/login/dashboard.dart';
+import 'package:gurukulam/views/dashboard/dashboard_view.dart';
 import 'package:provider/provider.dart';
 
 import 'package:gurukulam/core/utils/config.dart';
@@ -365,7 +365,7 @@ class _LoginBodyState extends State<_LoginBody> {
     Navigator.pushAndRemoveUntil(
       context,
 
-      MaterialPageRoute(builder: (_) => DashboardScreen()),
+      MaterialPageRoute(builder: (_) => DashboardView()),
 
       (route) => false,
     );

@@ -35,61 +35,42 @@ class MasterViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> addMaster(String name) async {
-    _isLoading = true;
-    notifyListeners();
-
+  Future<void> addMaster(String value) async {
     try {
-      final newMaster = await _repository.addMaster(tableName, name);
-      _masters.add(newMaster);
-      _isLoading = false;
-      notifyListeners();
+      await _repository.addMaster(masterType: tableName, value: value);
+
+      await loadMasters();
     } catch (e) {
-      _isLoading = false;
-      _errorMessage = 'Failed to add ${title.toLowerCase()}';
-      notifyListeners();
+      debugPrint('Add master error: $e');
+
       rethrow;
     }
   }
 
-  Future<void> updateMaster(int id, String name, bool status) async {
-    _isLoading = true;
-    notifyListeners();
-
+  Future<void> updateMaster(int id, String value, bool status) async {
     try {
-      final updatedMaster = await _repository.updateMaster(
-        tableName,
-        id,
-        name,
-        status,
+      await _repository.updateMaster(
+        masterType: tableName,
+        id: id,
+        value: value,
       );
-      final index = _masters.indexWhere((m) => m.id == id);
-      if (index != -1) {
-        _masters[index] = updatedMaster;
-      }
-      _isLoading = false;
-      notifyListeners();
+
+      await loadMasters();
     } catch (e) {
-      _isLoading = false;
-      _errorMessage = 'Failed to update ${title.toLowerCase()}';
-      notifyListeners();
+      debugPrint('Update master error: $e');
+
       rethrow;
     }
   }
 
   Future<void> deleteMaster(int id) async {
-    _isLoading = true;
-    notifyListeners();
-
     try {
-      await _repository.deleteMaster(tableName, id);
-      _masters.removeWhere((m) => m.id == id);
-      _isLoading = false;
-      notifyListeners();
+      await _repository.deleteMaster(masterType: tableName, id: id);
+
+      await loadMasters();
     } catch (e) {
-      _isLoading = false;
-      _errorMessage = 'Failed to delete ${title.toLowerCase()}';
-      notifyListeners();
+      debugPrint('Delete master error: $e');
+
       rethrow;
     }
   }

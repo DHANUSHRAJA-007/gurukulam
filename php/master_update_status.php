@@ -5,18 +5,10 @@ require_once "conn.php";
 
 header("Content-Type: application/json");
 
-// =====================================================
-// HANDLE PREFLIGHT REQUEST
-// =====================================================
-
 if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
     http_response_code(200);
     exit();
 }
-
-// =====================================================
-// ONLY POST ALLOWED
-// =====================================================
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 
@@ -29,10 +21,6 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 
     exit;
 }
-
-// =====================================================
-// MASTER TABLE CONFIGURATION
-// =====================================================
 
 $masters = [
 
@@ -57,16 +45,9 @@ $masters = [
         "major_specialization_master"
 ];
 
-// =====================================================
-// GET POST DATA
-// =====================================================
-
 $master = $_POST["master"] ?? "";
 $id = intval($_POST["id"] ?? 0);
-
-// =====================================================
-// VALIDATION
-// =====================================================
+$status = intval($_POST["status"] ?? -1);
 
 if (!isset($masters[$master])) {
 
@@ -88,17 +69,19 @@ if ($id <= 0) {
     exit;
 }
 
+if ($status !== 0 && $status !== 1) {
+
+    echo json_encode([
+        "success" => false,
+        "message" => "Invalid status"
+    ]);
+
+    exit;
+}
+
 $table = $masters[$master];
 
-// =====================================================
-// SOFT DELETE
-// =====================================================
-
 try {
-
-    // -------------------------------------------------
-    // CHECK RECORD
-    // -------------------------------------------------
 
     $check = $conn->prepare(
         "SELECT id
@@ -106,13 +89,6 @@ try {
          WHERE id = ?
          LIMIT 1"
     );
-
-    if (!$check) {
-        throw new Exception(
-            "Prepare failed: " .
-            $conn->error
-        );
-    }
 
     $check->bind_param(
         "i",
@@ -133,40 +109,33 @@ try {
         exit;
     }
 
-    // -------------------------------------------------
-    // SOFT DELETE
-    // -------------------------------------------------
-
     $stmt = $conn->prepare(
         "UPDATE `$table`
-         SET status = 0
+         SET status = ?
          WHERE id = ?"
     );
 
-    if (!$stmt) {
-        throw new Exception(
-            "Delete prepare failed: " .
-            $conn->error
-        );
-    }
-
     $stmt->bind_param(
-        "i",
+        "ii",
+        $status,
         $id
     );
 
     if (!$stmt->execute()) {
 
         throw new Exception(
-            "Delete failed: " .
             $stmt->error
         );
     }
 
     echo json_encode([
         "success" => true,
-        "message" => "Deleted successfully",
-        "id" => $id
+        "message" =>
+            $status == 1
+                ? "Activated successfully"
+                : "Deactivated successfully",
+        "id" => $id,
+        "status" => $status
     ]);
 
 } catch (Exception $e) {
@@ -175,7 +144,8 @@ try {
 
     echo json_encode([
         "success" => false,
-        "message" => $e->getMessage()
+        "message" => "Server error: " .
+            $e->getMessage()
     ]);
 }
 

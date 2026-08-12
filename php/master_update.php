@@ -1,9 +1,34 @@
 <?php
 
-header("Content-Type: application/json");
-
+require_once "cors.php";
 require_once "conn.php";
 
+header("Content-Type: application/json");
+
+// =====================================================
+// HANDLE PREFLIGHT REQUEST
+// =====================================================
+
+if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
+    http_response_code(200);
+    exit();
+}
+
+// =====================================================
+// ONLY POST ALLOWED
+// =====================================================
+
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+
+    http_response_code(405);
+
+    echo json_encode([
+        "success" => false,
+        "message" => "Only POST method is allowed"
+    ]);
+
+    exit;
+}
 
 // =====================================================
 // MASTER TABLE CONFIGURATION
@@ -47,15 +72,13 @@ $masters = [
     ]
 ];
 
-
 // =====================================================
-// GET DATA
+// GET POST DATA
 // =====================================================
 
 $master = $_POST["master"] ?? "";
 $id = intval($_POST["id"] ?? 0);
 $value = trim($_POST["value"] ?? "");
-
 
 // =====================================================
 // VALIDATION
@@ -91,10 +114,8 @@ if ($value === "") {
     exit;
 }
 
-
 $table = $masters[$master]["table"];
 $column = $masters[$master]["column"];
-
 
 // =====================================================
 // UPDATE
@@ -102,7 +123,9 @@ $column = $masters[$master]["column"];
 
 try {
 
-    // Check record exists
+    // -------------------------------------------------
+    // CHECK RECORD EXISTS
+    // -------------------------------------------------
 
     $check = $conn->prepare(
         "SELECT id
@@ -110,6 +133,12 @@ try {
          WHERE id = ?
          LIMIT 1"
     );
+
+    if (!$check) {
+        throw new Exception(
+            "Prepare failed: " . $conn->error
+        );
+    }
 
     $check->bind_param(
         "i",
@@ -120,8 +149,7 @@ try {
 
     $result = $check->get_result();
 
-
-    if ($result->num_rows == 0) {
+    if ($result->num_rows === 0) {
 
         echo json_encode([
             "success" => false,
@@ -131,8 +159,9 @@ try {
         exit;
     }
 
-
-    // Check duplicate
+    // -------------------------------------------------
+    // CHECK DUPLICATE
+    // -------------------------------------------------
 
     $duplicate = $conn->prepare(
         "SELECT id
@@ -141,6 +170,13 @@ try {
          AND id != ?
          LIMIT 1"
     );
+
+    if (!$duplicate) {
+        throw new Exception(
+            "Duplicate check failed: " .
+            $conn->error
+        );
+    }
 
     $duplicate->bind_param(
         "si",
@@ -153,7 +189,6 @@ try {
     $duplicateResult =
         $duplicate->get_result();
 
-
     if ($duplicateResult->num_rows > 0) {
 
         echo json_encode([
@@ -164,8 +199,9 @@ try {
         exit;
     }
 
-
-    // Update
+    // -------------------------------------------------
+    // UPDATE RECORD
+    // -------------------------------------------------
 
     $stmt = $conn->prepare(
         "UPDATE `$table`
@@ -173,28 +209,32 @@ try {
          WHERE id = ?"
     );
 
+    if (!$stmt) {
+        throw new Exception(
+            "Update prepare failed: " .
+            $conn->error
+        );
+    }
+
     $stmt->bind_param(
         "si",
         $value,
         $id
     );
 
+    if (!$stmt->execute()) {
 
-    if ($stmt->execute()) {
-
-        echo json_encode([
-            "success" => true,
-            "message" => "Updated successfully"
-        ]);
-
-    } else {
-
-        echo json_encode([
-            "success" => false,
-            "message" => "Failed to update record"
-        ]);
+        throw new Exception(
+            "Update failed: " .
+            $stmt->error
+        );
     }
 
+    echo json_encode([
+        "success" => true,
+        "message" => "Updated successfully",
+        "id" => $id
+    ]);
 
 } catch (Exception $e) {
 
@@ -202,7 +242,10 @@ try {
 
     echo json_encode([
         "success" => false,
-        "message" => "Server error"
+        "message" => $e->getMessage()
     ]);
 }
+
+$conn->close();
+
 ?>

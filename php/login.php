@@ -19,38 +19,57 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         'message' => 'Invalid request method. Use POST.'
     ]);
 
-    exit();
+    exit;
 }
 
 
 // =====================================================
-// READ JSON BODY
+// READ REQUEST DATA
+// Supports BOTH:
+// 1. application/json
+// 2. application/x-www-form-urlencoded
 // =====================================================
 
-$input = json_decode(
-    file_get_contents('php://input'),
-    true
-);
+$contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+
+if (strpos($contentType, 'application/json') !== false) {
+
+    $rawData = file_get_contents('php://input');
+
+    $input = json_decode(
+        $rawData,
+        true
+    );
+
+    if (!is_array($input)) {
+        $input = [];
+    }
+
+} else {
+
+    // Flutter form-urlencoded request
+    $input = $_POST;
+}
 
 
 // =====================================================
 // GET USERNAME & PASSWORD
 // =====================================================
 
-$username = isset($input['username'])
-    ? trim($input['username'])
-    : '';
+$username = trim(
+    $input['username'] ?? ''
+);
 
-$password = isset($input['password'])
-    ? trim($input['password'])
-    : '';
+$password = trim(
+    $input['password'] ?? ''
+);
 
 
 // =====================================================
 // VALIDATION
 // =====================================================
 
-if (empty($username) || empty($password)) {
+if ($username === '' || $password === '') {
 
     http_response_code(400);
 
@@ -59,7 +78,7 @@ if (empty($username) || empty($password)) {
         'message' => 'Username, password are required'
     ]);
 
-    exit();
+    exit;
 }
 
 
@@ -113,99 +132,72 @@ try {
 
 
     // =================================================
-    // USER FOUND
+    // SUCCESS
     // =================================================
 
     if (mysqli_num_rows($result) === 1) {
 
-        $user_data =
+        $userData =
             mysqli_fetch_assoc($result);
 
 
-        // =============================================
-        // SESSION
-        // =============================================
-
-        session_start();
-
-        $_SESSION['user_id'] =
-            $user_data['id'];
-
-        $_SESSION['username'] =
-            $user_data['name'];
-
-        $_SESSION['user_type'] =
-            $user_data['user_type'];
-
-
-        // =============================================
-        // RESPONSE
-        // =============================================
-
         echo json_encode([
-
             'success' => true,
 
             'message' =>
                 'Login successful',
 
             'user' => [
-
                 'id' =>
-                    $user_data['id'],
+                    $userData['id'],
 
                 'name' =>
-                    $user_data['name'],
+                    $userData['name'],
 
                 'user_type' =>
-                    $user_data['user_type'],
+                    $userData['user_type'],
             ]
         ]);
 
-        exit();
-
-    } else {
-
-        // =============================================
-        // INVALID LOGIN
-        // =============================================
-
-        http_response_code(401);
-
-        echo json_encode([
-
-            'success' => false,
-
-            'message' =>
-                'Invalid username or password'
-        ]);
-
-        exit();
+        exit;
     }
 
+
+    // =================================================
+    // INVALID LOGIN
+    // =================================================
+
+    http_response_code(401);
+
+    echo json_encode([
+        'success' => false,
+        'message' =>
+            'Invalid username or password'
+    ]);
 
 } catch (Exception $e) {
 
     http_response_code(500);
 
     echo json_encode([
-
         'success' => false,
-
         'message' =>
             'Server error: '
             . $e->getMessage()
     ]);
+}
 
-} finally {
 
-    if (isset($stmt)) {
-        mysqli_stmt_close($stmt);
-    }
+// =====================================================
+// CLOSE CONNECTION
+// =====================================================
 
-    if (isset($conn) && $conn) {
-        mysqli_close($conn);
-    }
+if (isset($stmt)) {
+    mysqli_stmt_close($stmt);
+}
+
+if (isset($conn) && $conn) {
+    mysqli_close($conn);
 }
 
 ?>
