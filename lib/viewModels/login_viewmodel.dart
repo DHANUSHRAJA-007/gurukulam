@@ -16,13 +16,10 @@ class LoginViewModel extends ChangeNotifier {
   // ==========================================
 
   bool _isLoading = false;
-  bool _isLoadingDepartments = false;
   bool _obscurePassword = true;
 
-  String? _selectedDepartmentId;
   String? _errorMessage;
 
-  List<DepartmentModel> _departments = [];
 
   UserModel? _user;
 
@@ -32,20 +29,15 @@ class LoginViewModel extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
 
-  bool get isLoadingDepartments =>
-      _isLoadingDepartments;
-
+  
   bool get obscurePassword =>
       _obscurePassword;
 
-  String? get selectedDepartmentId =>
-      _selectedDepartmentId;
+  
 
   String? get errorMessage =>
       _errorMessage;
 
-  List<DepartmentModel> get departments =>
-      _departments;
 
   UserModel? get user => _user;
 
@@ -60,19 +52,8 @@ class LoginViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ==========================================
-  // Department Selection
-  // ==========================================
-
-  void selectDepartment(
-    String? departmentId,
-  ) {
-    _selectedDepartmentId =
-        departmentId;
-
-    notifyListeners();
-  }
-
+ 
+  
   
 
   // ==========================================
@@ -85,14 +66,6 @@ class LoginViewModel extends ChangeNotifier {
   }) async {
     _errorMessage = null;
 
-    if (_selectedDepartmentId == null ||
-        _selectedDepartmentId!.isEmpty) {
-      _errorMessage =
-          'Please select a department';
-
-      notifyListeners();
-      return false;
-    }
 
     _isLoading = true;
 
@@ -103,8 +76,7 @@ class LoginViewModel extends ChangeNotifier {
           await _repository.login(
         username: username.trim(),
         password: password.trim(),
-        department:
-            _selectedDepartmentId!,
+
       );
 
       if (response.success &&
@@ -174,9 +146,7 @@ class LoginViewModel extends ChangeNotifier {
       return 'Your account is inactive. Please contact administrator.';
     }
 
-    if (error.contains('department')) {
-      return 'Invalid department selected. Please try again.';
-    }
+    
 
     return message.isNotEmpty
         ? message

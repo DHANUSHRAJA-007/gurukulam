@@ -21,13 +21,11 @@ class LoginRepository {
   Future<LoginResponseModel> login({
     required String username,
     required String password,
-    required String department,
   }) async {
     final response =
         await _loginService.login(
       username: username,
-      password: password,
-      department: department,
+      password: password
     );
 
     return LoginResponseModel.fromJson(
@@ -58,61 +56,6 @@ class LoginRepository {
     await prefs.setString(
       AppConstants.userType,
       user.userType,
-    );
-
-    await prefs.setString(
-      AppConstants.departmentId,
-      user.departmentId,
-    );
-
-    await prefs.setString(
-      AppConstants.departmentName,
-      user.departmentName,
-    );
-
-    await prefs.setString(
-      AppConstants.companyId,
-      user.companyId,
-    );
-
-    await prefs.setString(
-      AppConstants.companyName,
-      user.companyName,
-    );
-
-    await prefs.setBool(
-      AppConstants.dashboard,
-      user.dashboard,
-    );
-
-    await prefs.setBool(
-      AppConstants.treatmentMaster,
-      user.treatmentMaster,
-    );
-
-    await prefs.setBool(
-      AppConstants.categoryMaster,
-      user.categoryMaster,
-    );
-
-    await prefs.setBool(
-      AppConstants.salesEntry,
-      user.salesEntry,
-    );
-
-    await prefs.setBool(
-      AppConstants.expensesEntry,
-      user.expensesEntry,
-    );
-
-    await prefs.setBool(
-      AppConstants.expensesCategory,
-      user.expensesCategory,
-    );
-
-    await prefs.setBool(
-      AppConstants.salesEntryReport,
-      user.salesEntryReport,
     );
 
     await prefs.setBool(

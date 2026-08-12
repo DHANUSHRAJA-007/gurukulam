@@ -6,7 +6,6 @@ import 'package:gurukulam/core/utils/config.dart';
 import 'package:gurukulam/core/utils/validators.dart';
 import 'package:gurukulam/core/constant/app_constant.dart';
 
-import 'package:gurukulam/models/login_model.dart';
 
 import 'package:gurukulam/viewModels/login_viewmodel.dart';
 
@@ -253,8 +252,8 @@ class _LoginBodyState extends State<_LoginBody> {
 
                           child: ElevatedButton(
                             onPressed:
-                                viewModel.isLoading ||
-                                    viewModel.isLoadingDepartments
+                                viewModel.isLoading 
+                                    
                                 ? null
                                 : () => _login(context, viewModel),
 

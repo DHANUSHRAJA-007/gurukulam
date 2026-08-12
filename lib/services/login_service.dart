@@ -4,19 +4,14 @@ import 'package:http/http.dart' as http;
 import 'package:gurukulam/core/utils/config.dart';
 
 class LoginService {
-  // ==========================================
-  // Get departments by username
-  // ==========================================
 
-  
 
   Future<Map<String, dynamic>> login({
     required String username,
     required String password,
-    required String department,
-  }) async {
+   }) async {
     final uri = Uri.parse(
-      '$baseUrl/login1.php',
+      '$baseUrl/login.php',
     );
 
     final response = await http
@@ -29,8 +24,7 @@ class LoginService {
           body: {
             'username': username,
             'password': password,
-            'department': department,
-          },
+           },
         )
         .timeout(
           const Duration(seconds: 30),
