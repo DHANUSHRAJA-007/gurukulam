@@ -186,7 +186,19 @@ Win32Window::MessageHandler(HWND hwnd,
         PostQuitMessage(0);
       }
       return 0;
+case WM_GETMINMAXINFO: {
+auto info = reinterpret_cast<MINMAXINFO*>(lparam);
+// Get current DPI scaling factor to ensure 600 looks correct on all screens
+HMONITOR monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+UINT dpi = FlutterDesktopGetDpiForMonitor(monitor);
+double scale_factor = dpi / 96.0;
 
+// Set minimum width to 600 (scaled by DPI)
+info->ptMinTrackSize.x = static_cast<LONG>(600 * scale_factor);
+// Optional: set a minimum height as well
+info->ptMinTrackSize.y = static_cast<LONG>(400 * scale_factor);
+return 0;
+}
     case WM_DPICHANGED: {
       auto newRectSize = reinterpret_cast<RECT*>(lparam);
       LONG newWidth = newRectSize->right - newRectSize->left;
