@@ -31,25 +31,13 @@ class _LoginViewState extends State<LoginView> {
   @override
   void initState() {
     super.initState();
-
-    _usernameFocusNode.addListener(_usernameFocusListener);
-  }
-
-  void _usernameFocusListener() {
-    if (!_usernameFocusNode.hasFocus) {
-      final username = _usernameController.text.trim();
-
-      if (username.isNotEmpty) {
-        context.read<LoginViewModel>().loadDepartments(username);
-      }
-    }
   }
 
   @override
   void dispose() {
     _usernameController.dispose();
     _passwordController.dispose();
-    _usernameFocusNode.removeListener(_usernameFocusListener);
+
     _usernameFocusNode.dispose();
 
     super.dispose();
@@ -251,73 +239,6 @@ class _LoginBodyState extends State<_LoginBody> {
                           ),
 
                           validator: Validators.password,
-                        ),
-
-                        const SizedBox(height: 24),
-
-                        // =================================
-                        // DEPARTMENT
-                        // =================================
-                        DropdownButtonFormField<String>(
-                          initialValue: viewModel.selectedDepartmentId,
-
-                          isExpanded: true,
-
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Color(0xFF313131),
-                          ),
-
-                          decoration: _inputDecoration(
-                            'Select Department',
-
-                            suffixIcon: viewModel.isLoadingDepartments
-                                ? const Padding(
-                                    padding: EdgeInsets.all(12),
-
-                                    child: SizedBox(
-                                      width: 14,
-                                      height: 14,
-
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                              Colors.blue,
-                                            ),
-                                      ),
-                                    ),
-                                  )
-                                : const Icon(
-                                    Icons.arrow_drop_down,
-                                    color: Color(0xFF999999),
-                                  ),
-                          ),
-
-                          items: viewModel.departments.map((
-                            DepartmentModel department,
-                          ) {
-                            return DropdownMenuItem<String>(
-                              value: department.id,
-
-                              child: Text(
-                                department.name,
-
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Color(0xFF313131),
-                                ),
-                              ),
-                            );
-                          }).toList(),
-
-                          onChanged:
-                              viewModel.isLoading ||
-                                  viewModel.isLoadingDepartments
-                              ? null
-                              : viewModel.selectDepartment,
-
-                          validator: Validators.department,
                         ),
 
                         const SizedBox(height: 24),

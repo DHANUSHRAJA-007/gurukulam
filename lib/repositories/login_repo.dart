@@ -12,40 +12,7 @@ class LoginRepository {
   }) : _loginService =
             loginService ?? LoginService();
 
-  // ==========================================
-  // Get Departments
-  // ==========================================
-
-  Future<List<DepartmentModel>>
-      getDepartments(
-    String username,
-  ) async {
-    final response =
-        await _loginService.getDepartments(
-      username,
-    );
-
-    if (response['success'] != true) {
-      throw Exception(
-        response['message']?.toString() ??
-            'No departments found',
-      );
-    }
-
-    final List departments =
-        response['departments'] ?? [];
-
-    return departments
-        .map(
-          (department) =>
-              DepartmentModel.fromJson(
-            Map<String, dynamic>.from(
-              department,
-            ),
-          ),
-        )
-        .toList();
-  }
+ 
 
   // ==========================================
   // Login
