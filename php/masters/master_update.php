@@ -43,7 +43,7 @@ $masters = [
 
     "education_level" => [
         "table" => "educationlevelmaster",
-        "column" => "education_level"
+        "column" => "educationlevel"
     ],
 
     "employment_type" => [
@@ -69,7 +69,12 @@ $masters = [
     "major_specialization" => [
         "table" => "major_specialization_master",
         "column" => "major_specialization"
-    ]
+    ],
+      "location" => [
+            "table" => "location_master",
+            "column" => "location"
+        ],
+
 ];
 
 // =====================================================

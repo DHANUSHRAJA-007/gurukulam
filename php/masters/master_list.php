@@ -14,7 +14,7 @@ $masters = [
 
     "education_level" => [
         "table" => "educationlevelmaster",
-        "column" => "education_level"
+        "column" => "educationlevel"
     ],
 
     "employment_type" => [
@@ -25,7 +25,9 @@ $masters = [
     "industry" => [
         "table" => "industry_master",
         "column" => "industry"
-    ], "location" => [
+    ],
+
+    "location" => [
         "table" => "location_master",
         "column" => "location"
     ],

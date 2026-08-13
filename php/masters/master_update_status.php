@@ -42,7 +42,9 @@ $masters = [
         "languagemaster",
 
     "major_specialization" =>
-        "major_specialization_master"
+        "major_specialization_master",
+          "location" =>
+                         "location_master",
 ];
 
 $master = $_POST["master"] ?? "";

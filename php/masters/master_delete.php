@@ -55,6 +55,11 @@ $masters = [
 
     "major_specialization" =>
         "major_specialization_master"
+       ,
+         "location" =>
+                 "location_master",
+
+
 ];
 
 // =====================================================
