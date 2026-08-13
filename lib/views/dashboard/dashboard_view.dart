@@ -44,7 +44,6 @@ class _DashboardViewState extends State<DashboardView> {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
-          // Logo / App name
           const Expanded(
             child: Text(
               'GURUKULAM',
@@ -56,8 +55,6 @@ class _DashboardViewState extends State<DashboardView> {
               ),
             ),
           ),
-
-          // Search
           Container(
             width: 180,
             height: 36,
@@ -80,10 +77,7 @@ class _DashboardViewState extends State<DashboardView> {
               ),
             ),
           ),
-
           const SizedBox(width: 18),
-
-          // Notification
           Container(
             width: 32,
             height: 32,
@@ -97,10 +91,7 @@ class _DashboardViewState extends State<DashboardView> {
               color: DashboardView.blueColor,
             ),
           ),
-
           const SizedBox(width: 16),
-
-          // Profile
           Container(
             height: 32,
             padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -137,6 +128,8 @@ class _DashboardViewState extends State<DashboardView> {
   }
 
   // =========================================================
+  // FIXED SIDEBAR - WITH SCROLL
+  // =========================================================
   Widget _buildSidebar() {
     return Container(
       width: 220,
@@ -151,10 +144,8 @@ class _DashboardViewState extends State<DashboardView> {
         ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 26),
-
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
@@ -167,83 +158,282 @@ class _DashboardViewState extends State<DashboardView> {
               ),
             ),
           ),
-
           const SizedBox(height: 20),
+          // ===== SCROLLABLE SIDEBAR =====
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Dashboard
+                  _menuItem(
+                    icon: Icons.dashboard_outlined,
+                    title: 'Dashboard',
+                    selected: true,
+                    onTap: () {},
+                  ),
+                  const SizedBox(height: 8),
 
-          // Dashboard
-          _menuItem(
-            icon: Icons.dashboard_outlined,
-            title: 'Dashboard',
-            selected: true,
-            onTap: () {},
-          ),
+                  // Job Creation
+                  _menuItem(
+                    icon: Icons.work_outline,
+                    title: 'Job Creation',
+                    selected: false,
+                    onTap: () {},
+                  ),
+                  const SizedBox(height: 8),
 
-          const SizedBox(height: 8),
+                  // Applicants
+                  _menuItem(
+                    icon: Icons.people_outline,
+                    title: 'Applicants',
+                    selected: false,
+                    onTap: () {},
+                  ),
+                  const SizedBox(height: 8),
 
-          // Job Creation
-          _menuItem(
-            icon: Icons.work_outline,
-            title: 'Job Creation',
-            selected: false,
-            onTap: () {
-              //               Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => MasterPage(
-              //       tableName: 'industry_master',
-              //       title: 'Industry',
-              //     ),
-              //   ),
-              // );
-            },
-          ),
-
-          const SizedBox(height: 8),
-
-          // Applicants
-          _menuItem(
-            icon: Icons.people_outline,
-            title: 'Applicants',
-            selected: false,
-            onTap: () {},
-          ),
-
-          const SizedBox(height: 8),
-
-          // Masters
-          _menuItem(
-            icon: Icons.settings_outlined,
-            title: 'Masters',
-            selected: false,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      MasterPage(tableName: 'language', title: 'Language'),
-                ),
-              );
-            },
-          ),
-
-          const SizedBox(height: 8),
-
-          _menuItem(
-            icon: Icons.business_outlined,
-            title: 'Industry',
-            selected: false,
-            onTap: () {},
-          ),
-
-          const SizedBox(height: 8),
-
-          _menuItem(
-            icon: Icons.school_outlined,
-            title: 'Education',
-            selected: false,
-            onTap: () {},
+                  // ===== MASTERS WITH DROPDOWN =====
+                  _buildMasterMenuItem(),
+                ],
+              ),
+            ),
           ),
         ],
+      ),
+    );
+  }
+
+  // ===== MASTER MENU WITH DROPDOWN - ALL CORRECT TABLE NAMES =====
+  Widget _buildMasterMenuItem() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          dividerColor: Colors.transparent,
+        ),
+        child: ExpansionTile(
+          tilePadding: EdgeInsets.zero,
+          leading: const Icon(
+            Icons.settings_outlined,
+            size: 18,
+            color: DashboardView.yellowColor,
+          ),
+          title: const Text(
+            'Masters',
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: DashboardView.yellowColor,
+            ),
+          ),
+          iconColor: DashboardView.yellowColor,
+          collapsedIconColor: DashboardView.yellowColor,
+          backgroundColor: Colors.transparent,
+          collapsedBackgroundColor: Colors.transparent,
+          childrenPadding: const EdgeInsets.only(left: 30),
+          shape: const RoundedRectangleBorder(
+            side: BorderSide(color: Colors.transparent),
+          ),
+          children: [
+            // Language
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              horizontalTitleGap: 0,
+              leading: const Icon(
+                Icons.translate,
+                size: 16,
+                color: DashboardView.yellowColor,
+              ),
+              title: const Text(
+                'Language',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w400,
+                  color: DashboardView.yellowColor,
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        MasterPage(tableName: 'language', title: 'Language'),
+                  ),
+                );
+              },
+            ),
+            // Industry
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              horizontalTitleGap: 0,
+              leading: const Icon(
+                Icons.business_outlined,
+                size: 16,
+                color: DashboardView.yellowColor,
+              ),
+              title: const Text(
+                'Industry',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w400,
+                  color: DashboardView.yellowColor,
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        MasterPage(tableName: 'industry', title: 'Industry'),
+                  ),
+                );
+              },
+            ),
+            // Degree
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              horizontalTitleGap: 0,
+              leading: const Icon(
+                Icons.school_outlined,
+                size: 16,
+                color: DashboardView.yellowColor,
+              ),
+              title: const Text(
+                'Degree',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w400,
+                  color: DashboardView.yellowColor,
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        MasterPage(tableName: 'degree', title: 'Degree'),
+                  ),
+                );
+              },
+            ),
+            // Education Level
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              horizontalTitleGap: 0,
+              leading: const Icon(
+                Icons.auto_stories_outlined,
+                size: 16,
+                color: DashboardView.yellowColor,
+              ),
+              title: const Text(
+                'Education Level',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w400,
+                  color: DashboardView.yellowColor,
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MasterPage(
+                      tableName: 'education_level',
+                      title: 'Education Level',
+                    ),
+                  ),
+                );
+              },
+            ),
+            // Employment
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              horizontalTitleGap: 0,
+              leading: const Icon(
+                Icons.work_history_outlined,
+                size: 16,
+                color: DashboardView.yellowColor,
+              ),
+              title: const Text(
+                'Employment',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w400,
+                  color: DashboardView.yellowColor,
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        MasterPage(
+                          tableName: 'employment_type',
+                          title: 'Employment',
+                        ),
+                  ),
+                );
+              },
+            ),
+            // Job Role
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              horizontalTitleGap: 0,
+              leading: const Icon(
+                Icons.assignment_outlined,
+                size: 16,
+                color: DashboardView.yellowColor,
+              ),
+              title: const Text(
+                'Job Role',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w400,
+                  color: DashboardView.yellowColor,
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        MasterPage(tableName: 'job_role', title: 'Job Role'),
+                  ),
+                );
+              },
+            ),
+            // Major Specification
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              horizontalTitleGap: 0,
+              leading: const Icon(
+                Icons.science_outlined,
+                size: 16,
+                color: DashboardView.yellowColor,
+              ),
+              title: const Text(
+                'Major Specification',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w400,
+                  color: DashboardView.yellowColor,
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MasterPage(
+                      tableName: 'major_specialization',
+                      title: 'Major Specification',
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -302,7 +492,6 @@ class _DashboardViewState extends State<DashboardView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Heading
               const Text(
                 'Dashboard Overview',
                 style: TextStyle(
@@ -311,23 +500,15 @@ class _DashboardViewState extends State<DashboardView> {
                   color: Color(0xFF313131),
                 ),
               ),
-
               const SizedBox(height: 4),
-
               const Text(
                 "Welcome back! Here's what's happening "
-                "with your applicants today.",
+                    "with your applicants today.",
                 style: TextStyle(fontSize: 12, color: Color(0xFF999999)),
               ),
-
               const SizedBox(height: 32),
-
-              // First row
               _buildStatisticsGrid(),
-
               const SizedBox(height: 28),
-
-              // Second row
               _buildSecondRow(),
             ],
           ),
@@ -341,17 +522,13 @@ class _DashboardViewState extends State<DashboardView> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
-
         int columns = 3;
-
         if (width < 900) {
           columns = 2;
         }
-
         if (width < 600) {
           columns = 1;
         }
-
         return GridView.count(
           crossAxisCount: columns,
           crossAxisSpacing: 20,
@@ -368,7 +545,6 @@ class _DashboardViewState extends State<DashboardView> {
               iconBackground: const Color(0xFFEEF2FF),
               iconColor: DashboardView.blueColor,
             ),
-
             _statCard(
               title: 'Jobs Hold',
               value: '3',
@@ -377,7 +553,6 @@ class _DashboardViewState extends State<DashboardView> {
               iconBackground: const Color(0xFFFFFBEB),
               iconColor: const Color(0xFFF59E0B),
             ),
-
             _statCard(
               title: 'Jobs Placed',
               value: '3',
@@ -428,7 +603,6 @@ class _DashboardViewState extends State<DashboardView> {
                   color: Color(0xFF999999),
                 ),
               ),
-
               Container(
                 width: 44,
                 height: 44,
@@ -440,9 +614,7 @@ class _DashboardViewState extends State<DashboardView> {
               ),
             ],
           ),
-
           const SizedBox(height: 4),
-
           Text(
             value,
             style: const TextStyle(
@@ -452,9 +624,7 @@ class _DashboardViewState extends State<DashboardView> {
               height: 1,
             ),
           ),
-
           const Spacer(),
-
           Row(
             children: [
               Container(
@@ -465,9 +635,7 @@ class _DashboardViewState extends State<DashboardView> {
                   shape: BoxShape.circle,
                 ),
               ),
-
               const SizedBox(width: 8),
-
               Text(
                 footer,
                 style: const TextStyle(fontSize: 11, color: Color(0xFF999999)),
@@ -484,7 +652,6 @@ class _DashboardViewState extends State<DashboardView> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
-
         if (width < 700) {
           return Column(
             children: [
@@ -508,7 +675,6 @@ class _DashboardViewState extends State<DashboardView> {
             ],
           );
         }
-
         return Row(
           children: [
             Expanded(
@@ -521,9 +687,7 @@ class _DashboardViewState extends State<DashboardView> {
                 iconBackground: const Color(0xFFEEF2FF),
               ),
             ),
-
             const SizedBox(width: 20),
-
             Expanded(
               child: _secondCard(
                 title: 'Unfilled Profiles',
@@ -577,9 +741,7 @@ class _DashboardViewState extends State<DashboardView> {
                     color: Color(0xFF999999),
                   ),
                 ),
-
                 const SizedBox(height: 4),
-
                 Text(
                   value,
                   style: const TextStyle(
@@ -588,9 +750,7 @@ class _DashboardViewState extends State<DashboardView> {
                     color: Color(0xFF313131),
                   ),
                 ),
-
                 const Spacer(),
-
                 Row(
                   children: [
                     Container(
@@ -601,9 +761,7 @@ class _DashboardViewState extends State<DashboardView> {
                         shape: BoxShape.circle,
                       ),
                     ),
-
                     const SizedBox(width: 8),
-
                     Text(
                       footer,
                       style: const TextStyle(
@@ -616,7 +774,6 @@ class _DashboardViewState extends State<DashboardView> {
               ],
             ),
           ),
-
           Container(
             width: 44,
             height: 44,
