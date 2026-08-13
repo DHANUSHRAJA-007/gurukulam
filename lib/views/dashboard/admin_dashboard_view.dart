@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gurukulam/viewModels/job_viewmodel.dart';
 import 'package:gurukulam/views/jobcreation.dart';
 import 'package:gurukulam/views/master/master_page.dart';
-import 'package:provider/provider.dart';
 
 class AdminDashboardView extends StatefulWidget {
   const AdminDashboardView({super.key});
@@ -178,22 +176,22 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
                   ),
                   const SizedBox(height: 8),
 
-          // Job Creation
-          _menuItem(
-            icon: Icons.work_outline,
-            title: 'Job Creation',
-            selected: false,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const JobCreationPage(),
-                ),
-              );
-            },
-          ),
+                  // Job Creation
+                  _menuItem(
+                    icon: Icons.work_outline,
+                    title: 'Job Creation',
+                    selected: false,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const JobCreationPage(),
+                        ),
+                      );
+                    },
+                  ),
 
-          const SizedBox(height: 8),
+                  const SizedBox(height: 8),
 
                   // Applicants
                   _menuItem(
@@ -220,26 +218,24 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Theme(
-        data: Theme.of(context).copyWith(
-          dividerColor: Colors.transparent,
-        ),
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
           tilePadding: EdgeInsets.zero,
           leading: const Icon(
             Icons.settings_outlined,
             size: 18,
-            color: DashboardView.yellowColor,
+            color: AdminDashboardView.yellowColor,
           ),
           title: const Text(
             'Masters',
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w500,
-              color: DashboardView.yellowColor,
+              color: AdminDashboardView.yellowColor,
             ),
           ),
-          iconColor: DashboardView.yellowColor,
-          collapsedIconColor: DashboardView.yellowColor,
+          iconColor: AdminDashboardView.yellowColor,
+          collapsedIconColor: AdminDashboardView.yellowColor,
           backgroundColor: Colors.transparent,
           collapsedBackgroundColor: Colors.transparent,
           childrenPadding: const EdgeInsets.only(left: 30),
@@ -254,14 +250,14 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
               leading: const Icon(
                 Icons.translate,
                 size: 16,
-                color: DashboardView.yellowColor,
+                color: AdminDashboardView.yellowColor,
               ),
               title: const Text(
                 'Language',
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
-                  color: DashboardView.yellowColor,
+                  color: AdminDashboardView.yellowColor,
                 ),
               ),
               onTap: () {
@@ -281,14 +277,14 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
               leading: const Icon(
                 Icons.business_outlined,
                 size: 16,
-                color: DashboardView.yellowColor,
+                color: AdminDashboardView.yellowColor,
               ),
               title: const Text(
                 'Industry',
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
-                  color: DashboardView.yellowColor,
+                  color: AdminDashboardView.yellowColor,
                 ),
               ),
               onTap: () {
@@ -308,14 +304,14 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
               leading: const Icon(
                 Icons.school_outlined,
                 size: 16,
-                color: DashboardView.yellowColor,
+                color: AdminDashboardView.yellowColor,
               ),
               title: const Text(
                 'Degree',
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
-                  color: DashboardView.yellowColor,
+                  color: AdminDashboardView.yellowColor,
                 ),
               ),
               onTap: () {
@@ -335,14 +331,14 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
               leading: const Icon(
                 Icons.auto_stories_outlined,
                 size: 16,
-                color: DashboardView.yellowColor,
+                color: AdminDashboardView.yellowColor,
               ),
               title: const Text(
                 'Education Level',
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
-                  color: DashboardView.yellowColor,
+                  color: AdminDashboardView.yellowColor,
                 ),
               ),
               onTap: () {
@@ -364,25 +360,24 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
               leading: const Icon(
                 Icons.work_history_outlined,
                 size: 16,
-                color: DashboardView.yellowColor,
+                color: AdminDashboardView.yellowColor,
               ),
               title: const Text(
                 'Employment',
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
-                  color: DashboardView.yellowColor,
+                  color: AdminDashboardView.yellowColor,
                 ),
               ),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        MasterPage(
-                          tableName: 'employment_type',
-                          title: 'Employment',
-                        ),
+                    builder: (context) => MasterPage(
+                      tableName: 'employment_type',
+                      title: 'Employment',
+                    ),
                   ),
                 );
               },
@@ -394,14 +389,14 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
               leading: const Icon(
                 Icons.assignment_outlined,
                 size: 16,
-                color: DashboardView.yellowColor,
+                color: AdminDashboardView.yellowColor,
               ),
               title: const Text(
                 'Job Role',
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
-                  color: DashboardView.yellowColor,
+                  color: AdminDashboardView.yellowColor,
                 ),
               ),
               onTap: () {
@@ -421,14 +416,14 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
               leading: const Icon(
                 Icons.science_outlined,
                 size: 16,
-                color: DashboardView.yellowColor,
+                color: AdminDashboardView.yellowColor,
               ),
               title: const Text(
                 'Major Specification',
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
-                  color: DashboardView.yellowColor,
+                  color: AdminDashboardView.yellowColor,
                 ),
               ),
               onTap: () {
@@ -514,7 +509,7 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
               const SizedBox(height: 4),
               const Text(
                 "Welcome back! Here's what's happening "
-                    "with your applicants today.",
+                "with your applicants today.",
                 style: TextStyle(fontSize: 12, color: Color(0xFF999999)),
               ),
               const SizedBox(height: 32),
