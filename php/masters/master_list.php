@@ -25,6 +25,9 @@ $masters = [
     "industry" => [
         "table" => "industry_master",
         "column" => "industry"
+    ], "location" => [
+        "table" => "location_master",
+        "column" => "location"
     ],
 
     "job_role" => [

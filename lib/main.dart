@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:gurukulam/viewModels/job_dashboard_viewmodel.dart';
+import 'package:gurukulam/viewModels/job_viewmodel.dart';
 import 'package:gurukulam/viewModels/login_viewmodel.dart';
 import 'package:gurukulam/viewModels/master_viewmodel.dart';
+import 'package:gurukulam/viewModels/profile_viewmodel.dart';
 import 'package:gurukulam/views/login/login_view.dart';
 import 'package:provider/provider.dart';
 
@@ -11,8 +14,13 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LoginViewModel()),
+        ChangeNotifierProvider(create: (_) => JobDashboardViewModel()),
+        ChangeNotifierProvider(create: (_) => JobViewModel()),
         ChangeNotifierProvider(
           create: (_) => MasterViewModel(tableName: '', title: ''),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ProfileViewModel()..loadUserProfile(),
         ),
       ],
       child: const GurukulamApp(),

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:gurukulam/viewModels/job_viewmodel.dart';
 import 'package:gurukulam/views/jobcreation.dart';
 import 'package:gurukulam/views/master/master_page.dart';
-import 'package:provider/provider.dart';
 
-class AdminDashboardView extends StatefulWidget {
-  const AdminDashboardView({super.key});
+import '../profile/profile_page.dart';
+import 'job_dashboard.dart';
+
+class UserDashboardView extends StatefulWidget {
+  const UserDashboardView({super.key});
 
   static const Color primaryColor = Color(0xFF0D9488);
   static const Color blueColor = Color(0xFF3869EB);
@@ -13,14 +14,14 @@ class AdminDashboardView extends StatefulWidget {
   static const Color backgroundColor = Color(0xFFF5F7FF);
 
   @override
-  State<AdminDashboardView> createState() => _AdminDashboardViewState();
+  State<UserDashboardView> createState() => _UserDashboardViewState();
 }
 
-class _AdminDashboardViewState extends State<AdminDashboardView> {
+class _UserDashboardViewState extends State<UserDashboardView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AdminDashboardView.backgroundColor,
+      backgroundColor: UserDashboardView.backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -29,7 +30,7 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
               child: Row(
                 children: [
                   _buildSidebar(),
-                  Expanded(child: _buildDashboardContent()),
+                  Expanded(child: JobDashboard()),
                 ],
               ),
             ),
@@ -43,7 +44,7 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
   Widget _buildTopBar() {
     return Container(
       height: 69,
-      color: AdminDashboardView.primaryColor,
+      color: UserDashboardView.primaryColor,
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
@@ -57,81 +58,6 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
                 color: Colors.white,
                 letterSpacing: 1,
               ),
-            ),
-          ),
-
-          // Search
-          Container(
-            width: 180,
-            height: 36,
-            decoration: BoxDecoration(
-              color: const Color(0xFFF5F7FF),
-              borderRadius: BorderRadius.circular(6),
-              border: Border.all(color: const Color(0xFFF0F0F0)),
-            ),
-            child: const TextField(
-              decoration: InputDecoration(
-                hintText: 'Search...',
-                hintStyle: TextStyle(color: Color(0xFF999999), fontSize: 12),
-                prefixIcon: Icon(
-                  Icons.search,
-                  size: 16,
-                  color: Color(0xFF999999),
-                ),
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(vertical: 9),
-              ),
-            ),
-          ),
-
-          const SizedBox(width: 18),
-
-          // Notification
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              color: const Color(0xFFEEF2FF),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.notifications_none,
-              size: 18,
-              color: AdminDashboardView.blueColor,
-            ),
-          ),
-
-          const SizedBox(width: 16),
-
-          // Profile
-          Container(
-            height: 32,
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: const Row(
-              children: [
-                CircleAvatar(
-                  radius: 14,
-                  backgroundColor: Color(0xFFEEF2FF),
-                  child: Icon(
-                    Icons.person,
-                    size: 17,
-                    color: AdminDashboardView.blueColor,
-                  ),
-                ),
-                SizedBox(width: 8),
-                Text(
-                  'Admin',
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
-                    color: AdminDashboardView.yellowColor,
-                  ),
-                ),
-              ],
             ),
           ),
         ],
@@ -166,7 +92,7 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
                 fontSize: 10,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 1,
-                color: AdminDashboardView.yellowColor,
+                color: UserDashboardView.yellowColor,
               ),
             ),
           ),
@@ -185,17 +111,14 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
 
           // Job Creation
           _menuItem(
-            icon: Icons.work_outline,
-            title: 'Job Creation',
+            icon: Icons.work_history_outlined,
+            title: 'Applied Jobs',
             selected: false,
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ChangeNotifierProvider(
-                    create: (_) => JobViewModel(),
-                    child: const JobCreationPage(),
-                  ),
+                  builder: (context) => const JobCreationPage(),
                 ),
               );
             },
@@ -205,18 +128,23 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
 
           // Applicants
           _menuItem(
-            icon: Icons.people_outline,
-            title: 'Applicants',
+            icon: Icons.person_2_outlined,
+            title: 'My Profile',
             selected: false,
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => ProfilePage()),
+              );
+            },
           ),
 
           const SizedBox(height: 8),
 
           // Masters
           _menuItem(
-            icon: Icons.settings_outlined,
-            title: 'Masters',
+            icon: Icons.logout_outlined,
+            title: 'Logout',
             selected: false,
             onTap: () {
               Navigator.push(
@@ -227,24 +155,6 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
                 ),
               );
             },
-          ),
-
-          const SizedBox(height: 8),
-
-          _menuItem(
-            icon: Icons.business_outlined,
-            title: 'Industry',
-            selected: false,
-            onTap: () {},
-          ),
-
-          const SizedBox(height: 8),
-
-          _menuItem(
-            icon: Icons.school_outlined,
-            title: 'Education',
-            selected: false,
-            onTap: () {},
           ),
         ],
       ),
@@ -275,8 +185,8 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
                 icon,
                 size: 18,
                 color: selected
-                    ? AdminDashboardView.blueColor
-                    : AdminDashboardView.yellowColor,
+                    ? UserDashboardView.blueColor
+                    : UserDashboardView.yellowColor,
               ),
               const SizedBox(width: 14),
               Text(
@@ -285,351 +195,13 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
                   fontSize: 13,
                   fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
                   color: selected
-                      ? AdminDashboardView.blueColor
-                      : AdminDashboardView.yellowColor,
+                      ? UserDashboardView.blueColor
+                      : UserDashboardView.yellowColor,
                 ),
               ),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  // =========================================================
-  Widget _buildDashboardContent() {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(32, 42, 32, 32),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Heading
-              const Text(
-                'Dashboard Overview',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF313131),
-                ),
-              ),
-
-              const SizedBox(height: 4),
-
-              const Text(
-                "Welcome back! Here's what's happening "
-                "with your applicants today.",
-                style: TextStyle(fontSize: 12, color: Color(0xFF999999)),
-              ),
-
-              const SizedBox(height: 32),
-
-              // First row
-              _buildStatisticsGrid(),
-
-              const SizedBox(height: 28),
-
-              // Second row
-              _buildSecondRow(),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  // =========================================================
-  Widget _buildStatisticsGrid() {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final width = constraints.maxWidth;
-
-        int columns = 3;
-
-        if (width < 900) {
-          columns = 2;
-        }
-
-        if (width < 600) {
-          columns = 1;
-        }
-
-        return GridView.count(
-          crossAxisCount: columns,
-          crossAxisSpacing: 20,
-          mainAxisSpacing: 20,
-          childAspectRatio: 2.32,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
-            _statCard(
-              title: 'Jobs Open',
-              value: '4',
-              footer: '+2 this week',
-              icon: Icons.work_outline,
-              iconBackground: const Color(0xFFEEF2FF),
-              iconColor: AdminDashboardView.blueColor,
-            ),
-
-            _statCard(
-              title: 'Jobs Hold',
-              value: '3',
-              footer: '+1 this week',
-              icon: Icons.pause_circle_outline,
-              iconBackground: const Color(0xFFFFFBEB),
-              iconColor: const Color(0xFFF59E0B),
-            ),
-
-            _statCard(
-              title: 'Jobs Placed',
-              value: '3',
-              footer: '+1 this week',
-              icon: Icons.check_circle_outline,
-              iconBackground: const Color(0xFFECFDF5),
-              iconColor: const Color(0xFF10B981),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _statCard({
-    required String title,
-    required String value,
-    required String footer,
-    required IconData icon,
-    required Color iconBackground,
-    required Color iconColor,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: const Color(0xFFF0F0F0)),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x14000000),
-            offset: Offset(3, 5),
-            blurRadius: 20,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xFF999999),
-                ),
-              ),
-
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: iconBackground,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(icon, color: iconColor, size: 22),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 4),
-
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFF313131),
-              height: 1,
-            ),
-          ),
-
-          const Spacer(),
-
-          Row(
-            children: [
-              Container(
-                width: 6,
-                height: 6,
-                decoration: BoxDecoration(
-                  color: iconColor,
-                  shape: BoxShape.circle,
-                ),
-              ),
-
-              const SizedBox(width: 8),
-
-              Text(
-                footer,
-                style: const TextStyle(fontSize: 11, color: Color(0xFF999999)),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  // =========================================================
-  Widget _buildSecondRow() {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final width = constraints.maxWidth;
-
-        if (width < 700) {
-          return Column(
-            children: [
-              _secondCard(
-                title: 'Total Applicants',
-                value: '15',
-                footer: 'All applicants',
-                icon: Icons.people_outline,
-                iconColor: AdminDashboardView.blueColor,
-                iconBackground: const Color(0xFFEEF2FF),
-              ),
-              const SizedBox(height: 20),
-              _secondCard(
-                title: 'Unfilled Profiles',
-                value: '3',
-                footer: 'Needs attention',
-                icon: Icons.person_outline,
-                iconColor: const Color(0xFFEF4444),
-                iconBackground: const Color(0xFFFEF2F2),
-              ),
-            ],
-          );
-        }
-
-        return Row(
-          children: [
-            Expanded(
-              child: _secondCard(
-                title: 'Total Applicants',
-                value: '15',
-                footer: 'All applicants',
-                icon: Icons.people_outline,
-                iconColor: AdminDashboardView.blueColor,
-                iconBackground: const Color(0xFFEEF2FF),
-              ),
-            ),
-
-            const SizedBox(width: 20),
-
-            Expanded(
-              child: _secondCard(
-                title: 'Unfilled Profiles',
-                value: '3',
-                footer: 'Needs attention',
-                icon: Icons.person_outline,
-                iconColor: const Color(0xFFEF4444),
-                iconBackground: const Color(0xFFFEF2F2),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _secondCard({
-    required String title,
-    required String value,
-    required String footer,
-    required IconData icon,
-    required Color iconColor,
-    required Color iconBackground,
-  }) {
-    return Container(
-      height: 134,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: const Color(0xFFF0F0F0)),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x14000000),
-            offset: Offset(3, 5),
-            blurRadius: 20,
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF999999),
-                  ),
-                ),
-
-                const SizedBox(height: 4),
-
-                Text(
-                  value,
-                  style: const TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF313131),
-                  ),
-                ),
-
-                const Spacer(),
-
-                Row(
-                  children: [
-                    Container(
-                      width: 6,
-                      height: 6,
-                      decoration: BoxDecoration(
-                        color: iconColor,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-
-                    const SizedBox(width: 8),
-
-                    Text(
-                      footer,
-                      style: const TextStyle(
-                        fontSize: 11,
-                        color: Color(0xFF999999),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: iconBackground,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(icon, color: iconColor, size: 22),
-          ),
-        ],
       ),
     );
   }

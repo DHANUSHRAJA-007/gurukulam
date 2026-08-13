@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:gurukulam/views/dashboard/dashboard_view.dart';
-import 'package:provider/provider.dart';
-
+import 'package:gurukulam/core/constant/app_constant.dart';
 import 'package:gurukulam/core/utils/config.dart';
 import 'package:gurukulam/core/utils/validators.dart';
-import 'package:gurukulam/core/constant/app_constant.dart';
-
-
 import 'package:gurukulam/viewModels/login_viewmodel.dart';
+import 'package:gurukulam/views/dashboard/admin_dashboard_view.dart';
+import 'package:provider/provider.dart';
+
+import '../dashboard/user_dashboard_view.dart';
 
 // Change this import according to your dashboard location.
 
@@ -44,10 +43,7 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => LoginViewModel(),
-      child: const _LoginBody(),
-    );
+    return const _LoginBody();
   }
 }
 
@@ -251,9 +247,7 @@ class _LoginBodyState extends State<_LoginBody> {
                           height: 45,
 
                           child: ElevatedButton(
-                            onPressed:
-                                viewModel.isLoading 
-                                    
+                            onPressed: viewModel.isLoading
                                 ? null
                                 : () => _login(context, viewModel),
 
@@ -361,14 +355,24 @@ class _LoginBodyState extends State<_LoginBody> {
         backgroundColor: Colors.green,
       ),
     );
+    if (user.userType.toLowerCase() == 'admin') {
+      Navigator.pushAndRemoveUntil(
+        context,
 
-    Navigator.pushAndRemoveUntil(
-      context,
+        MaterialPageRoute(builder: (_) => AdminDashboardView()),
 
-      MaterialPageRoute(builder: (_) => DashboardView()),
+        (route) => false,
+      );
+    }
+    if (user.userType.toLowerCase() == 'user') {
+      Navigator.pushAndRemoveUntil(
+        context,
 
-      (route) => false,
-    );
+        MaterialPageRoute(builder: (_) => UserDashboardView()),
+
+        (route) => false,
+      );
+    }
   }
 
   // ==============================================

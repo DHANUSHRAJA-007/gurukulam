@@ -4,8 +4,8 @@ import 'package:gurukulam/views/jobcreation.dart';
 import 'package:gurukulam/views/master/master_page.dart';
 import 'package:provider/provider.dart';
 
-class DashboardView extends StatefulWidget {
-  const DashboardView({super.key});
+class AdminDashboardView extends StatefulWidget {
+  const AdminDashboardView({super.key});
 
   static const Color primaryColor = Color(0xFF0D9488);
   static const Color blueColor = Color(0xFF3869EB);
@@ -13,14 +13,14 @@ class DashboardView extends StatefulWidget {
   static const Color backgroundColor = Color(0xFFF5F7FF);
 
   @override
-  State<DashboardView> createState() => _DashboardViewState();
+  State<AdminDashboardView> createState() => _AdminDashboardViewState();
 }
 
-class _DashboardViewState extends State<DashboardView> {
+class _AdminDashboardViewState extends State<AdminDashboardView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: DashboardView.backgroundColor,
+      backgroundColor: AdminDashboardView.backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -43,7 +43,7 @@ class _DashboardViewState extends State<DashboardView> {
   Widget _buildTopBar() {
     return Container(
       height: 69,
-      color: DashboardView.primaryColor,
+      color: AdminDashboardView.primaryColor,
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
@@ -97,7 +97,7 @@ class _DashboardViewState extends State<DashboardView> {
             child: const Icon(
               Icons.notifications_none,
               size: 18,
-              color: DashboardView.blueColor,
+              color: AdminDashboardView.blueColor,
             ),
           ),
 
@@ -119,7 +119,7 @@ class _DashboardViewState extends State<DashboardView> {
                   child: Icon(
                     Icons.person,
                     size: 17,
-                    color: DashboardView.blueColor,
+                    color: AdminDashboardView.blueColor,
                   ),
                 ),
                 SizedBox(width: 8),
@@ -128,7 +128,7 @@ class _DashboardViewState extends State<DashboardView> {
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w500,
-                    color: DashboardView.yellowColor,
+                    color: AdminDashboardView.yellowColor,
                   ),
                 ),
               ],
@@ -166,7 +166,7 @@ class _DashboardViewState extends State<DashboardView> {
                 fontSize: 10,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 1,
-                color: DashboardView.yellowColor,
+                color: AdminDashboardView.yellowColor,
               ),
             ),
           ),
@@ -192,10 +192,7 @@ class _DashboardViewState extends State<DashboardView> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ChangeNotifierProvider(
-                    create: (_) => JobViewModel(),
-                    child: const JobCreationPage(),
-                  ),
+                  builder: (context) => const JobCreationPage(),
                 ),
               );
             },
@@ -275,8 +272,8 @@ class _DashboardViewState extends State<DashboardView> {
                 icon,
                 size: 18,
                 color: selected
-                    ? DashboardView.blueColor
-                    : DashboardView.yellowColor,
+                    ? AdminDashboardView.blueColor
+                    : AdminDashboardView.yellowColor,
               ),
               const SizedBox(width: 14),
               Text(
@@ -285,8 +282,8 @@ class _DashboardViewState extends State<DashboardView> {
                   fontSize: 13,
                   fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
                   color: selected
-                      ? DashboardView.blueColor
-                      : DashboardView.yellowColor,
+                      ? AdminDashboardView.blueColor
+                      : AdminDashboardView.yellowColor,
                 ),
               ),
             ],
@@ -369,7 +366,7 @@ class _DashboardViewState extends State<DashboardView> {
               footer: '+2 this week',
               icon: Icons.work_outline,
               iconBackground: const Color(0xFFEEF2FF),
-              iconColor: DashboardView.blueColor,
+              iconColor: AdminDashboardView.blueColor,
             ),
 
             _statCard(
@@ -496,7 +493,7 @@ class _DashboardViewState extends State<DashboardView> {
                 value: '15',
                 footer: 'All applicants',
                 icon: Icons.people_outline,
-                iconColor: DashboardView.blueColor,
+                iconColor: AdminDashboardView.blueColor,
                 iconBackground: const Color(0xFFEEF2FF),
               ),
               const SizedBox(height: 20),
@@ -520,7 +517,7 @@ class _DashboardViewState extends State<DashboardView> {
                 value: '15',
                 footer: 'All applicants',
                 icon: Icons.people_outline,
-                iconColor: DashboardView.blueColor,
+                iconColor: AdminDashboardView.blueColor,
                 iconBackground: const Color(0xFFEEF2FF),
               ),
             ),
