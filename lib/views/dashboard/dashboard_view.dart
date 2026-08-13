@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gurukulam/viewModels/job_viewmodel.dart';
+import 'package:gurukulam/views/jobcreation.dart';
 import 'package:gurukulam/views/master/master_page.dart';
+import 'package:provider/provider.dart';
 
 class DashboardView extends StatefulWidget {
   const DashboardView({super.key});
@@ -175,14 +178,25 @@ class _DashboardViewState extends State<DashboardView> {
                   ),
                   const SizedBox(height: 8),
 
-                  // Job Creation
-                  _menuItem(
-                    icon: Icons.work_outline,
-                    title: 'Job Creation',
-                    selected: false,
-                    onTap: () {},
+          // Job Creation
+          _menuItem(
+            icon: Icons.work_outline,
+            title: 'Job Creation',
+            selected: false,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChangeNotifierProvider(
+                    create: (_) => JobViewModel(),
+                    child: const JobCreationPage(),
                   ),
-                  const SizedBox(height: 8),
+                ),
+              );
+            },
+          ),
+
+          const SizedBox(height: 8),
 
                   // Applicants
                   _menuItem(
