@@ -7,38 +7,48 @@ part of 'job_model.dart';
 // **************************************************************************
 
 JobsModel _$JobsModelFromJson(Map<String, dynamic> json) => JobsModel(
-  id: (json['id'] as num).toInt(),
-  jobStatus: json['job_status'] as String?,
-  jobRoleId: (json['job_role_id'] as num?)?.toInt(),
-  industryId: (json['industry_id'] as num?)?.toInt(),
-  workMode: json['work_mode'] as String?,
-  location: json['location'] as String?,
-  salaryMin: (json['salary_min'] as num?)?.toDouble(),
-  salaryMax: (json['salary_max'] as num?)?.toDouble(),
-  salaryRange: json['salary_range'] as String?,
-  genderPreference: json['gender_preference'] as String?,
-  ageLimit: json['age_limit'] as String?,
-  minimumQualificationId: (json['minimum_qualification_id'] as num?)?.toInt(),
-  experienceRequired: json['experience_required'] as String?,
+  id: int.parse(json['id'].toString()),
+  jobStatus: json['job_status'].toString(),
+  jobRoleId: int.parse(json['job_role_id'].toString()),
+  industryId: int.parse(json['industry_id'].toString()),
+  workMode: json['work_mode'].toString(),
+  location: json['location'].toString(),
+  salaryMin: double.parse(
+    json['salary_min'].toString() == 'null'
+        ? '0.0'
+        : json['salary_min'].toString(),
+  ),
+  salaryMax: double.parse(
+    json['salary_max'].toString() == 'null'
+        ? '0.0'
+        : json['salary_max'].toString(),
+  ),
+  salaryRange: json['salary_range'].toString(),
+  genderPreference: json['gender_preference'].toString(),
+  ageLimit: json['age_limit'].toString(),
+  minimumQualificationId: int.parse(
+    json['minimum_qualification_id'].toString(),
+  ),
+  experienceRequired: json['experience_required'].toString(),
   languages: (json['languages'] as List<dynamic>?)
-      ?.map((e) => e as String)
+      ?.map((e) => e.toString())
       .toList(),
-  skills: (json['skills'] as List<dynamic>?)?.map((e) => e as String).toList(),
-  employmentTypeId: (json['employment_type_id'] as num?)?.toInt(),
-  workShiftTiming: json['work_shift_timing'] as String?,
-  numberOfVacancies: (json['number_of_vacancies'] as num?)?.toInt(),
-  jobBenefits: json['job_benefits'] as String?,
-  jobDescription: json['job_description'] as String?,
-  tagMessage: json['tag_message'] as String?,
+  skills: (json['skills'] as List<dynamic>?)?.map((e) => e.toString()).toList(),
+  employmentTypeId: int.parse(json['employment_type_id'].toString()),
+  workShiftTiming: json['work_shift_timing'].toString(),
+  numberOfVacancies: int.parse(json['number_of_vacancies'].toString()),
+  jobBenefits: json['job_benefits'].toString(),
+  jobDescription: json['job_description'].toString(),
+  tagMessage: json['tag_message'].toString(),
   screeningQuestions: (json['screening_questions'] as List<dynamic>?)
-      ?.map((e) => e as String)
+      ?.map((e) => e.toString())
       .toList(),
-  status: (json['status'] as num?)?.toInt(),
-  createdAt: json['created_at'] as String?,
-  jobRoleName: json['job_role_name'] as String?,
-  industryName: json['industry_name'] as String?,
-  qualificationName: json['qualification_name'] as String?,
-  employmentTypeName: json['employment_type_name'] as String?,
+  status: int.parse(json['status'].toString()),
+  createdAt: json['created_at'].toString(),
+  jobRoleName: json['job_role_name'].toString(),
+  industryName: json['industry_name'].toString(),
+  qualificationName: json['qualification_name'].toString(),
+  employmentTypeName: json['employment_type_name'].toString(),
 );
 
 Map<String, dynamic> _$JobsModelToJson(JobsModel instance) => <String, dynamic>{

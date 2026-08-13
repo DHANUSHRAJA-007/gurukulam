@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/job_model.dart';
 import '../services/job_dashboard_api_service.dart';
@@ -10,7 +11,7 @@ class JobDashboardViewModel extends ChangeNotifier {
   List<JobsModel> _filteredJobs = [];
   bool _isLoading = false;
   String? _error;
-
+  String _username = 'User';
   // Filter properties
   String? _selectedIndustry;
   String? _selectedLocation;
@@ -22,6 +23,7 @@ class JobDashboardViewModel extends ChangeNotifier {
   String? get selectedIndustry => _selectedIndustry;
   String? get selectedLocation => _selectedLocation;
   String? get searchQuery => _searchQuery;
+  String get username => _username;
 
   // Get unique industries and locations for filters
   List<String> get industries {
@@ -50,9 +52,10 @@ class JobDashboardViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // Use mock data for development
-      // _jobs = await _apiService.fetchJobs();
-      _jobs = _apiService.getMockJobs();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      _username = prefs.getString('username') ?? 'User';
+      _jobs = await _apiService.fetchJobs();
+
       _filteredJobs = List.from(_jobs);
       _applyFilters();
     } catch (e) {

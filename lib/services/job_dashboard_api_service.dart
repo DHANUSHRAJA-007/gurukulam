@@ -26,10 +26,10 @@ class JobDashboardApiService {
           throw Exception(jsonData['message'] ?? 'Failed to fetch jobs');
         }
       } else {
-        throw Exception('Server error: ${response.statusCode}');
+        throw Exception('Server error');
       }
     } catch (e) {
-      throw Exception('Failed to fetch jobs: $e');
+      throw Exception('Failed to fetch jobs ');
     }
   }
 
