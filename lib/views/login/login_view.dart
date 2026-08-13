@@ -4,11 +4,11 @@ import 'package:gurukulam/core/utils/config.dart';
 import 'package:gurukulam/core/utils/validators.dart';
 import 'package:gurukulam/viewModels/login_viewmodel.dart';
 import 'package:gurukulam/views/dashboard/admin_dashboard_view.dart';
+import 'package:gurukulam/views/login/signup_view.dart';
 import 'package:provider/provider.dart';
 
+import '../../viewModels/signup_viewmodel.dart';
 import '../dashboard/user_dashboard_view.dart';
-
-// Change this import according to your dashboard location.
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -265,26 +265,74 @@ class _LoginBodyState extends State<_LoginBody> {
 
                             child: viewModel.isLoading
                                 ? const SizedBox(
-                                    width: 20,
-                                    height: 20,
+                              width: 20,
+                              height: 20,
 
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
 
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                        Colors.white,
-                                      ),
-                                    ),
-                                  )
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
+                              ),
+                            )
                                 : const Text(
-                                    'Login',
+                              'Login',
 
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14,
-                                      color: Colors.white,
-                                    ),
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 24),
+
+                        // =================================
+                        // SIGN UP BUTTON
+                        // =================================
+                        SizedBox(
+                          width: double.infinity,
+
+                          height: 45,
+
+                          child: OutlinedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ChangeNotifierProvider(
+                                    create: (_) => SignUpViewModel(),
+                                    child: const SignUpView(),
                                   ),
+                                ),
+                              );
+                            },
+
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              foregroundColor: const Color(0xFF3869EB),
+                              side: const BorderSide(
+                                color: Color(0xFF3869EB),
+                                width: 1.5,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              elevation: 0,
+                            ),
+
+                            child: const Text(
+                              'Sign Up',
+
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                                color: Color(0xFF3869EB),
+                              ),
+                            ),
                           ),
                         ),
 
@@ -361,7 +409,7 @@ class _LoginBodyState extends State<_LoginBody> {
 
         MaterialPageRoute(builder: (_) => AdminDashboardView()),
 
-        (route) => false,
+            (route) => false,
       );
     }
     if (user.userType.toLowerCase() == 'user') {
@@ -370,7 +418,7 @@ class _LoginBodyState extends State<_LoginBody> {
 
         MaterialPageRoute(builder: (_) => UserDashboardView()),
 
-        (route) => false,
+            (route) => false,
       );
     }
   }

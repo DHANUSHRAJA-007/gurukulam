@@ -15,6 +15,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
   late TextEditingController _mobileController;
+  late TextEditingController _emailController;
   int? _selectedIndustryId;
   String? _selectedIndustry;
   int? _selectedLocationId;
@@ -27,6 +28,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final user = Provider.of<ProfileViewModel>(context, listen: false).user;
     _nameController = TextEditingController(text: user?.name ?? '');
     _mobileController = TextEditingController(text: user?.mobile ?? '');
+    _emailController = TextEditingController(text: user?.email ?? '');
     _selectedIndustryId = user?.industryId;
     _selectedIndustry = user?.industryName;
     _selectedLocationId = user?.locationId;
@@ -45,6 +47,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   void dispose() {
     _nameController.dispose();
     _mobileController.dispose();
+    _emailController.dispose();
     super.dispose();
   }
 
@@ -187,6 +190,28 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           }
                           if (value.length != 10) {
                             return 'Please enter valid 10-digit mobile number';
+                          }
+                          return null;
+                        },
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      // Email Field
+                      _buildTextField(
+                        controller: _emailController,
+                        label: 'Email ID',
+                        hint: 'Enter your email address',
+                        icon: Icons.email_outlined,
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter email address';
+                          }
+                          // Simple email validation
+                          if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                              .hasMatch(value)) {
+                            return 'Please enter a valid email address';
                           }
                           return null;
                         },

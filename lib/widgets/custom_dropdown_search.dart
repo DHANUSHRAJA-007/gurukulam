@@ -11,6 +11,7 @@ class CustomDropdownSearch extends StatefulWidget {
   final bool isReadOnly;
   final bool autoFocus;
   final GlobalKey<DropdownSearchState<String>>? dropdownKey;
+  final String? Function(String?)? validator;
 
   const CustomDropdownSearch({
     super.key,
@@ -23,6 +24,7 @@ class CustomDropdownSearch extends StatefulWidget {
     this.isReadOnly = false,
     this.autoFocus = false,
     this.dropdownKey,
+    this.validator,
   });
 
   @override
@@ -32,7 +34,9 @@ class CustomDropdownSearch extends StatefulWidget {
 class _CustomDropdownSearchState extends State<CustomDropdownSearch> {
   final TextEditingController _searchController = TextEditingController();
   final GlobalKey<DropdownSearchState<String>> _internalDropdownKey =
-      GlobalKey();
+  GlobalKey();
+
+  String? _errorText;
 
   @override
   void initState() {
@@ -72,10 +76,16 @@ class _CustomDropdownSearchState extends State<CustomDropdownSearch> {
   void _selectItem(String item) {
     if (widget.onChanged != null) {
       if (widget.isRequired && item.isEmpty) {
+        setState(() {
+          _errorText = "This field is required";
+        });
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text("This field is required")));
       } else {
+        setState(() {
+          _errorText = null;
+        });
         widget.onChanged!(item);
         Navigator.of(context).pop();
       }
@@ -97,6 +107,18 @@ class _CustomDropdownSearchState extends State<CustomDropdownSearch> {
       );
     }
 
+    // Validate on each build
+    if (widget.validator != null) {
+      final error = widget.validator!(widget.selectedItem);
+      if (error != _errorText) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          setState(() {
+            _errorText = error;
+          });
+        });
+      }
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -115,11 +137,11 @@ class _CustomDropdownSearchState extends State<CustomDropdownSearch> {
                 ),
                 children: widget.isRequired
                     ? const [
-                        TextSpan(
-                          text: ' *',
-                          style: TextStyle(color: Colors.red),
-                        ),
-                      ]
+                  TextSpan(
+                    text: ' *',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ]
                     : [],
               ),
             ),
@@ -132,14 +154,20 @@ class _CustomDropdownSearchState extends State<CustomDropdownSearch> {
           onSelected: widget.isReadOnly
               ? null
               : (value) {
-                  if (widget.isRequired && (value == null || value.isEmpty)) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("This field is required")),
-                    );
-                    return;
-                  }
-                  widget.onChanged?.call(value);
-                },
+            if (widget.isRequired && (value == null || value.isEmpty)) {
+              setState(() {
+                _errorText = "This field is required";
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("This field is required")),
+              );
+              return;
+            }
+            setState(() {
+              _errorText = null;
+            });
+            widget.onChanged?.call(value);
+          },
           decoratorProps: DropDownDecoratorProps(
             baseStyle: TextStyle(
               fontSize: 14,
@@ -154,6 +182,14 @@ class _CustomDropdownSearchState extends State<CustomDropdownSearch> {
               enabledBorder: border(),
               focusedBorder: border(),
               disabledBorder: border(color: const Color(0xFFD1D5DB)),
+              errorBorder: OutlineInputBorder(
+                borderSide: const BorderSide(color: Colors.red, width: 1.4),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide: const BorderSide(color: Colors.red, width: 1.4),
+                borderRadius: BorderRadius.circular(6),
+              ),
               isDense: widget.isCompact,
               contentPadding: widget.isCompact
                   ? const EdgeInsets.symmetric(horizontal: 14, vertical: 13)
@@ -163,6 +199,7 @@ class _CustomDropdownSearchState extends State<CustomDropdownSearch> {
                     ? const Color(0xFF6B7280)
                     : const Color(0xFF6B7280),
               ),
+              errorText: _errorText,
             ),
           ),
           popupProps: PopupProps.menu(
@@ -208,6 +245,7 @@ class CustomDropdownSearchOnlyBox extends StatelessWidget {
   final bool isReadOnly;
   final bool autoFocus;
   final GlobalKey<DropdownSearchState<String>>? dropdownKey;
+  final String? Function(String?)? validator;
 
   const CustomDropdownSearchOnlyBox({
     super.key,
@@ -220,6 +258,7 @@ class CustomDropdownSearchOnlyBox extends StatelessWidget {
     this.isReadOnly = false,
     this.autoFocus = false,
     this.dropdownKey,
+    this.validator,
   });
 
   @override
@@ -241,14 +280,14 @@ class CustomDropdownSearchOnlyBox extends StatelessWidget {
         onSelected: isReadOnly
             ? null
             : (value) {
-                if (isRequired && (value == null || value.isEmpty)) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("This field is required")),
-                  );
-                  return;
-                }
-                onChanged?.call(value);
-              },
+          if (isRequired && (value == null || value.isEmpty)) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("This field is required")),
+            );
+            return;
+          }
+          onChanged?.call(value);
+        },
         suffixProps: DropdownSuffixProps(
           dropdownButtonProps: DropdownButtonProps(
             padding: const EdgeInsets.only(
@@ -286,6 +325,15 @@ class CustomDropdownSearchOnlyBox extends StatelessWidget {
               horizontal: 12,
               vertical: 8,
             ),
+            errorBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.red, width: 1),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.red, width: 1),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            errorText: validator != null ? validator!(selectedItem) : null,
           ),
         ),
         popupProps: PopupProps.menu(

@@ -438,6 +438,34 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
                 );
               },
             ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              horizontalTitleGap: 0,
+              leading: const Icon(
+                Icons.science_outlined,
+                size: 16,
+                color: AdminDashboardView.yellowColor,
+              ),
+              title: const Text(
+                'Location',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w400,
+                  color: AdminDashboardView.yellowColor,
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MasterPage(
+                      tableName: 'location',
+                      title: 'Location',
+                    ),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),
