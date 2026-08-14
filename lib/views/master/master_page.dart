@@ -369,6 +369,21 @@ import '../../models/master_model.dart';
 import '../../viewModels/master_viewmodel.dart';
 import 'add_edit_master_dialog.dart';
 
+// class MasterPage extends StatelessWidget {
+//   final String tableName;
+//   final String title;
+//
+//   const MasterPage({super.key, required this.tableName, required this.title});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return ChangeNotifierProvider(
+//       create: (_) =>
+//           MasterViewModel(tableName: tableName, title: title)..loadMasters(),
+//       child: _MasterPageContent(title: title),
+//     );
+//   }
+// }
 class MasterPage extends StatelessWidget {
   final String tableName;
   final String title;
@@ -377,14 +392,15 @@ class MasterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 🔥 Use a unique key based on tableName to force recreation
     return ChangeNotifierProvider(
+      key: ValueKey(tableName), // ← This forces recreation
       create: (_) =>
           MasterViewModel(tableName: tableName, title: title)..loadMasters(),
       child: _MasterPageContent(title: title),
     );
   }
 }
-
 // ============================================================
 // MASTER PAGE CONTENT
 // ============================================================

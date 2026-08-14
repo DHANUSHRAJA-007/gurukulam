@@ -18,20 +18,44 @@ class MasterViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
+  // Future<void> loadMasters() async {
+  //   print("call");
+  //   _isLoading = true;
+  //   _errorMessage = null;
+  //   _masters = [];
+  //   notifyListeners();
+  //
+  //   try {
+  //     _masters = await _repository.getMasters(tableName);
+  //     _isLoading = false;
+  //     notifyListeners();
+  //   } catch (e) {
+  //     _isLoading = false;
+  //     _errorMessage = 'Failed to load ${title.toLowerCase()}s';
+  //     notifyListeners();
+  //     rethrow;
+  //   }
+  // }
+  // In MasterViewModel.dart
   Future<void> loadMasters() async {
+    print("🔄 Loading masters for table: $tableName");
     _isLoading = true;
     _errorMessage = null;
+    _masters = [];
     notifyListeners();
 
     try {
       _masters = await _repository.getMasters(tableName);
+      print("✅ Loaded ${_masters.length} masters");
       _isLoading = false;
       notifyListeners();
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print("❌ Error loading masters: $e");
+      print("Stack trace: $stackTrace");
       _isLoading = false;
-      _errorMessage = 'Failed to load ${title.toLowerCase()}s';
+      _errorMessage = 'Failed to load ${title.toLowerCase()}s: $e';
       notifyListeners();
-      rethrow;
+      // Don't rethrow here - let the UI show the error
     }
   }
 

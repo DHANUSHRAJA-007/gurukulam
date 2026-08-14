@@ -414,9 +414,6 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
   }
 }
 
-// =========================================================
-// DASHBOARD CONTENT
-// =========================================================
 class _DashboardContent extends StatelessWidget {
   const _DashboardContent();
 
@@ -440,7 +437,7 @@ class _DashboardContent extends StatelessWidget {
               const SizedBox(height: 4),
               const Text(
                 "Welcome back! Here's what's happening "
-                    "with your applicants today.",
+                "with your applicants today.",
                 style: TextStyle(fontSize: 12, color: Color(0xFF999999)),
               ),
               const SizedBox(height: 32),
@@ -743,9 +740,6 @@ class _DashboardContent extends StatelessWidget {
   }
 }
 
-// =========================================================
-// APPLICANTS CONTENT
-// =========================================================
 class _ApplicantsContent extends StatelessWidget {
   const _ApplicantsContent();
 
