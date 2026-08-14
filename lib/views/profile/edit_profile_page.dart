@@ -198,26 +198,26 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       const SizedBox(height: 24),
 
                       // Email Field
-                      _buildTextField(
-                        controller: _emailController,
-                        label: 'Email ID',
-                        hint: 'Enter your email address',
-                        icon: Icons.email_outlined,
-                        keyboardType: TextInputType.emailAddress,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter email address';
-                          }
-                          // Simple email validation
-                          if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                              .hasMatch(value)) {
-                            return 'Please enter a valid email address';
-                          }
-                          return null;
-                        },
-                      ),
+                      // _buildTextField(
+                      //   controller: _emailController,
+                      //   label: 'Email ID',
+                      //   hint: 'Enter your email address',
+                      //   icon: Icons.email_outlined,
+                      //   keyboardType: TextInputType.emailAddress,
+                      //   validator: (value) {
+                      //     if (value == null || value.isEmpty) {
+                      //       return 'Please enter email address';
+                      //     }
+                      //     // Simple email validation
+                      //     if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                      //         .hasMatch(value)) {
+                      //       return 'Please enter a valid email address';
+                      //     }
+                      //     return null;
+                      //   },
+                      // ),
 
-                      const SizedBox(height: 24),
+                      // const SizedBox(height: 24),
 
                       // Section Title - Job Details
                       Row(

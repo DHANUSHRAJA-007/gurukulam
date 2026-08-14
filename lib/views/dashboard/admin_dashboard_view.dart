@@ -563,37 +563,43 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
         if (width < 600) {
           columns = 1;
         }
-        return GridView.count(
-          crossAxisCount: columns,
-          crossAxisSpacing: 20,
-          mainAxisSpacing: 20,
-          childAspectRatio: 2.32,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
+
+        return Wrap(  // ← Changed from GridView to Wrap
+          spacing: 20,
+          runSpacing: 20,
           children: [
-            _statCard(
-              title: 'Jobs Open',
-              value: '4',
-              footer: '+2 this week',
-              icon: Icons.work_outline,
-              iconBackground: const Color(0xFFEEF2FF),
-              iconColor: AdminDashboardView.blueColor,
+            SizedBox(
+              width: (width - (columns - 1) * 20) / columns,
+              child: _statCard(
+                title: 'Jobs Open',
+                value: '4',
+                footer: '+2 this week',
+                icon: Icons.work_outline,
+                iconBackground: const Color(0xFFEEF2FF),
+                iconColor: AdminDashboardView.blueColor,
+              ),
             ),
-            _statCard(
-              title: 'Jobs Hold',
-              value: '3',
-              footer: '+1 this week',
-              icon: Icons.pause_circle_outline,
-              iconBackground: const Color(0xFFFFFBEB),
-              iconColor: const Color(0xFFF59E0B),
+            SizedBox(
+              width: (width - (columns - 1) * 20) / columns,
+              child: _statCard(
+                title: 'Jobs Hold',
+                value: '3',
+                footer: '+1 this week',
+                icon: Icons.pause_circle_outline,
+                iconBackground: const Color(0xFFFFFBEB),
+                iconColor: const Color(0xFFF59E0B),
+              ),
             ),
-            _statCard(
-              title: 'Jobs Placed',
-              value: '3',
-              footer: '+1 this week',
-              icon: Icons.check_circle_outline,
-              iconBackground: const Color(0xFFECFDF5),
-              iconColor: const Color(0xFF10B981),
+            SizedBox(
+              width: (width - (columns - 1) * 20) / columns,
+              child: _statCard(
+                title: 'Jobs Placed',
+                value: '3',
+                footer: '+1 this week',
+                icon: Icons.check_circle_outline,
+                iconBackground: const Color(0xFFECFDF5),
+                iconColor: const Color(0xFF10B981),
+              ),
             ),
           ],
         );
@@ -610,11 +616,11 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
     required Color iconColor,
   }) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(color: const Color(0xFFF0F0F0)),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: const [
           BoxShadow(
             color: Color(0x14000000),
@@ -623,58 +629,75 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xFF999999),
-                ),
+          Expanded(
+            child: ClipRect(  // ← ADD THIS - Prevents overflow
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  FittedBox(  // ← ADD THIS - Scales text to fit
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF999999),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      value,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF313131),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Row(
+                    children: [
+                      Container(
+                        width: 5,
+                        height: 5,
+                        decoration: BoxDecoration(
+                          color: iconColor,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          footer,
+                          style: const TextStyle(
+                            fontSize: 9,
+                            color: Color(0xFF999999),
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: iconBackground,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(icon, color: iconColor, size: 22),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFF313131),
-              height: 1,
             ),
           ),
-          const Spacer(),
-          Row(
-            children: [
-              Container(
-                width: 6,
-                height: 6,
-                decoration: BoxDecoration(
-                  color: iconColor,
-                  shape: BoxShape.circle,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                footer,
-                style: const TextStyle(fontSize: 11, color: Color(0xFF999999)),
-              ),
-            ],
+          Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              color: iconBackground,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, color: iconColor, size: 16),
           ),
         ],
       ),
