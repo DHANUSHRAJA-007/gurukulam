@@ -387,7 +387,7 @@ class _JobDashboardState extends State<JobDashboard> {
               ...items.map((item) {
                 return DropdownMenuItem<MasterModel>(
                   value: item,
-                  child: Text(item.toString()),
+                  child: Text(item.name.toString()),
                 );
               }),
             ],
