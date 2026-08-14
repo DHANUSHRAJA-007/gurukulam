@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:gurukulam/models/signup_model.dart';
-import 'package:gurukulam/repositories/signup_repo.dart';
+
+import '../models/master_model.dart';
+import '../models/signup_model.dart';
+import '../services/master_service.dart';
+import '../services/signup_service.dart';
 
 class SignUpViewModel extends ChangeNotifier {
-  final SignUpRepository _repository;
+  final SignUpService _signUpService;
 
-  SignUpViewModel({
-    SignUpRepository? repository,
-  }) : _repository = repository ?? SignUpRepository();
+  SignUpViewModel({SignUpService? signUpService})
+      : _signUpService = signUpService ?? SignUpService();
 
   // ==========================================
   // State Variables
@@ -18,9 +20,9 @@ class SignUpViewModel extends ChangeNotifier {
   String? _errorMessage;
   SignUpModel? _user;
 
-  // Dropdown data
-  List<dynamic> _industries = [];
-  List<dynamic> _locations = [];
+  // Dropdown data - Using MasterModel like ProfileViewModel ✅
+  List<MasterModel> _industries = [];
+  List<MasterModel> _locations = [];
   bool _isLoadingDropdowns = false;
 
   // ==========================================
@@ -31,8 +33,8 @@ class SignUpViewModel extends ChangeNotifier {
   bool get obscurePassword => _obscurePassword;
   String? get errorMessage => _errorMessage;
   SignUpModel? get user => _user;
-  List<dynamic> get industries => _industries;
-  List<dynamic> get locations => _locations;
+  List<MasterModel> get industries => _industries;
+  List<MasterModel> get locations => _locations;
   bool get isLoadingDropdowns => _isLoadingDropdowns;
 
   // ==========================================
@@ -45,7 +47,7 @@ class SignUpViewModel extends ChangeNotifier {
   }
 
   // ==========================================
-  // Load Industries & Locations
+  // Load Industries & Locations - Using MasterService ✅
   // ==========================================
 
   Future<void> loadIndustryAndLoc() async {
@@ -54,20 +56,19 @@ class SignUpViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final data = await _repository.getIndustryAndLoc();
+      // Using MasterService like ProfileViewModel ✅
+      final res = await Future.wait([
+        MasterService().getMasters('industry'),
+        MasterService().getMasters('location'),
+      ]);
 
-      if (data.containsKey('industries')) {
-        _industries = data['industries'] ?? [];
-      }
-
-      if (data.containsKey('locations')) {
-        _locations = data['locations'] ?? [];
-      }
+      _industries = res[0];
+      _locations = res[1];
 
       print('Industries loaded: ${_industries.length}');
       print('Locations loaded: ${_locations.length}');
     } catch (e) {
-      _errorMessage = 'Failed to load data. Please try again.';
+      _errorMessage = 'Failed to load industries and locations';
       print('Error loading dropdowns: $e');
     } finally {
       _isLoadingDropdowns = false;
@@ -92,7 +93,7 @@ class SignUpViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final response = await _repository.signUp(
+      final response = await _signUpService.signUp(
         name: name.trim(),
         mobile: mobile.trim(),
         email: email.trim(),
@@ -101,12 +102,14 @@ class SignUpViewModel extends ChangeNotifier {
         locationId: locationId,
       );
 
-      if (response.success && response.user != null) {
-        _user = response.user;
+      if (response['success'] == true) {
+        if (response['user'] != null) {
+          _user = SignUpModel.fromJson(response['user']);
+        }
         return true;
       }
 
-      _errorMessage = _getSignUpErrorMessage(response.message);
+      _errorMessage = _getSignUpErrorMessage(response['message'] ?? '');
       return false;
     } catch (e) {
       _errorMessage = _getUserFriendlyError(e.toString());

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/master_model.dart';
 import '../../viewModels/signup_viewmodel.dart';
 import '../../widgets/custom_dropdown_search.dart';
 
@@ -24,6 +26,8 @@ class _SignUpViewState extends State<SignUpView> {
   String? _selectedLocation;
 
   bool _agreeTerms = false;
+  String? _industryError;
+  String? _locationError;
 
   @override
   void initState() {
@@ -49,13 +53,13 @@ class _SignUpViewState extends State<SignUpView> {
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 600;
 
-    // Convert List<dynamic> to List<String> - FIXED ✅
+    // Convert List<MasterModel> to List<String> - FIXED ✅
     final List<String> industryNames = viewModel.industries
-        .map((industry) => industry.name as String)
+        .map((industry) => industry.name)
         .toList();
 
     final List<String> locationNames = viewModel.locations
-        .map((location) => location.name as String)
+        .map((location) => location.name)
         .toList();
 
     return Scaffold(
@@ -282,7 +286,7 @@ class _SignUpViewState extends State<SignUpView> {
                     const SizedBox(height: 18),
 
                     // =================================
-                    // INTERESTED ROLE (Industry)
+                    // INDUSTRY - FIXED ✅
                     // =================================
                     if (viewModel.isLoadingDropdowns)
                       const Padding(
@@ -301,57 +305,93 @@ class _SignUpViewState extends State<SignUpView> {
                         ),
                       )
                     else ...[
-                      CustomDropdownSearch(
-                        label: 'Industry',
-                        selectedItem: _selectedIndustry,
-                        items: industryNames,  // ← FIXED ✅
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedIndustry = value;
-                            _selectedIndustryId = viewModel.industries
-                                .firstWhere(
-                                  (industry) => industry.name == value,
-                            )
-                                .id;
-                          });
-                        },
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please select a role';
-                          }
-                          return null;
-                        },
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade50,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: _industryError != null
+                                ? Colors.red.shade300
+                                : Colors.grey.shade200,
+                          ),
+                        ),
+                        child: CustomDropdownSearch(
+                          label: 'Industry',
+                          selectedItem: _selectedIndustry,
+                          items: industryNames,
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedIndustry = value;
+                              _industryError = null;
+                              // Find the ID from MasterModel
+                              final selected = viewModel.industries.firstWhere(
+                                    (industry) => industry.name == value,
+                                orElse: () => MasterModel(id: 0, name: '', status: false),
+                              );
+                              _selectedIndustryId = selected.id;
+                            });
+                          },
+                        ),
                       ),
+                      if (_industryError != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4, left: 4),
+                          child: Text(
+                            _industryError!,
+                            style: TextStyle(
+                              color: Colors.red.shade700,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
                     ],
                     const SizedBox(height: 18),
 
                     // =================================
-                    // INTERESTED LOCATION
+                    // LOCATION - FIXED ✅
                     // =================================
                     if (viewModel.isLoadingDropdowns)
                       const SizedBox.shrink()
                     else ...[
-                      CustomDropdownSearch(
-                        label: 'Interested Location',
-                        selectedItem: _selectedLocation,
-                        items: locationNames,  // ← FIXED ✅
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedLocation = value;
-                            _selectedLocationId = viewModel.locations
-                                .firstWhere(
-                                  (location) => location.name == value,
-                            )
-                                .id;
-                          });
-                        },
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please select a location';
-                          }
-                          return null;
-                        },
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade50,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: _locationError != null
+                                ? Colors.red.shade300
+                                : Colors.grey.shade200,
+                          ),
+                        ),
+                        child: CustomDropdownSearch(
+                          label: 'Interested Location',
+                          selectedItem: _selectedLocation,
+                          items: locationNames,
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedLocation = value;
+                              _locationError = null;
+                              // Find the ID from MasterModel
+                              final selected = viewModel.locations.firstWhere(
+                                    (location) => location.name == value,
+                                orElse: () => MasterModel(id: 0, name: '', status: false),
+                              );
+                              _selectedLocationId = selected.id;
+                            });
+                          },
+                        ),
                       ),
+                      if (_locationError != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4, left: 4),
+                          child: Text(
+                            _locationError!,
+                            style: TextStyle(
+                              color: Colors.red.shade700,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
                     ],
                     const SizedBox(height: 24),
 
@@ -359,6 +399,7 @@ class _SignUpViewState extends State<SignUpView> {
                     // TERMS & CONDITIONS
                     // =================================
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
                           width: 24,
@@ -378,11 +419,40 @@ class _SignUpViewState extends State<SignUpView> {
                         ),
                         const SizedBox(width: 10),
                         Expanded(
-                          child: Text(
-                            'I agree to the Terms of Service and Privacy Policy',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.grey.shade700,
+                          child: RichText(
+                            text: TextSpan(
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.grey.shade700,
+                              ),
+                              children: [
+                                const TextSpan(
+                                  text: 'I agree to the ',
+                                ),
+                                TextSpan(
+                                  text: 'Terms of Service',
+                                  style: TextStyle(
+                                    color: Colors.blue.shade700,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                    },
+                                ),
+                                const TextSpan(
+                                  text: ' and ',
+                                ),
+                                TextSpan(
+                                  text: 'Privacy Policy',
+                                  style: TextStyle(
+                                    color: Colors.blue.shade700,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                    },
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -428,37 +498,35 @@ class _SignUpViewState extends State<SignUpView> {
                     // =================================
                     SizedBox(
                       width: double.infinity,
-                      height: 45,
-                      child: OutlinedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ChangeNotifierProvider(
-                                create: (_) => SignUpViewModel(),
-                                child: const SignUpView(),
-                              ),
-                            ),
-                          );
-                        },
-                        style: OutlinedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: const Color(0xFF3869EB),
-                          side: const BorderSide(
-                            color: Color(0xFF3869EB),
-                            width: 1.5,
-                          ),
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: viewModel.isLoading ? null : _signUp,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF0D9488),
+                          foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
+                            borderRadius: BorderRadius.circular(8),
                           ),
                           elevation: 0,
+                          disabledBackgroundColor: const Color(0xFF0D9488)
+                              .withValues(alpha: 0.5),
                         ),
-                        child: const Text(
+                        child: viewModel.isLoading
+                            ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.5,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.white,
+                            ),
+                          ),
+                        )
+                            : const Text(
                           'Sign Up',
                           style: TextStyle(
+                            fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            fontSize: 14,
-                            color: Color(0xFF3869EB),
                           ),
                         ),
                       ),
@@ -614,16 +682,45 @@ class _SignUpViewState extends State<SignUpView> {
   }
 
   Future<void> _signUp() async {
+    // Validate Industry
+    if (_selectedIndustry == null || _selectedIndustry!.isEmpty) {
+      setState(() {
+        _industryError = 'Please select a role';
+      });
+    } else {
+      setState(() {
+        _industryError = null;
+      });
+    }
+
+    // Validate Location
+    if (_selectedLocation == null || _selectedLocation!.isEmpty) {
+      setState(() {
+        _locationError = 'Please select a location';
+      });
+    } else {
+      setState(() {
+        _locationError = null;
+      });
+    }
+
+    // Validate all fields
     if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    // Check if industry or location has error
+    if (_industryError != null || _locationError != null) {
       return;
     }
 
     if (!_agreeTerms) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Please agree to Terms of Service'),
+          content: const Text('Please agree to Terms of Service and Privacy Policy'),
           backgroundColor: Colors.orange.shade700,
           behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 3),
         ),
       );
       return;

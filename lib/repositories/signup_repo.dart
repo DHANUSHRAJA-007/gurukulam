@@ -9,11 +9,12 @@ class SignUpRepository {
 
   Future<Map<String, dynamic>> getIndustryAndLoc() async {
     try {
-      final industries = await _service.getMasters('industry');
+      // Use correct table names from your database
+      final industries = await _service.getMasters('industry_master');
       final locations = await _service.getMasters('location_master');
 
-      print('Industries loaded: ${industries.length}');
-      print('Locations loaded: ${locations.length}');
+      print('Industries from API: ${industries.length}');
+      print('Locations from API: ${locations.length}');
 
       return {
         'industries': industries,
