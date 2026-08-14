@@ -15,6 +15,9 @@ class AdminDashboardView extends StatefulWidget {
 }
 
 class _AdminDashboardViewState extends State<AdminDashboardView> {
+  int _selectedIndex = 0;
+  String? _selectedMaster;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +30,7 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
               child: Row(
                 children: [
                   _buildSidebar(),
-                  Expanded(child: _buildDashboardContent()),
+                  Expanded(child: _buildMainContent()), // ← Fixed
                 ],
               ),
             ),
@@ -37,6 +40,8 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
     );
   }
 
+  // =========================================================
+  // TOP BAR
   // =========================================================
   Widget _buildTopBar() {
     return Container(
@@ -129,7 +134,45 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
   }
 
   // =========================================================
-  // FIXED SIDEBAR - WITH SCROLL
+  // MAIN CONTENT - FIXED ✅
+  // =========================================================
+  Widget _buildMainContent() {
+    if (_selectedMaster != null) {
+      return MasterPage(
+        tableName: _selectedMaster!,
+        title: _getMasterTitle(_selectedMaster!),
+      );
+    }
+
+    // Use switch for better performance
+    switch (_selectedIndex) {
+      case 0:
+        return const _DashboardContent();
+      case 1:
+        return const JobCreationPage();
+      case 2:
+        return const _ApplicantsContent();
+      default:
+        return const _DashboardContent();
+    }
+  }
+
+  String _getMasterTitle(String tableName) {
+    final titles = {
+      'language': 'Language',
+      'industry': 'Industry',
+      'degree': 'Degree',
+      'education_level': 'Education Level',
+      'employment_type': 'Employment',
+      'job_role': 'Job Role',
+      'major_specialization': 'Major Specification',
+      'location': 'Location',
+    };
+    return titles[tableName] ?? tableName;
+  }
+
+  // =========================================================
+  // SIDEBAR
   // =========================================================
   Widget _buildSidebar() {
     return Container(
@@ -145,6 +188,7 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
         ],
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 26),
           const Padding(
@@ -160,49 +204,48 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
             ),
           ),
           const SizedBox(height: 20),
-          // ===== SCROLLABLE SIDEBAR =====
           Expanded(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Dashboard
                   _menuItem(
                     icon: Icons.dashboard_outlined,
                     title: 'Dashboard',
-                    selected: true,
-                    onTap: () {},
+                    selected: _selectedIndex == 0 && _selectedMaster == null,
+                    onTap: () {
+                      setState(() {
+                        _selectedIndex = 0;
+                        _selectedMaster = null;
+                      });
+                    },
                   ),
                   const SizedBox(height: 8),
-
-                  // Job Creation
                   _menuItem(
                     icon: Icons.work_outline,
                     title: 'Job Creation',
-                    selected: false,
+                    selected: _selectedIndex == 1 && _selectedMaster == null,
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const JobCreationPage(),
-                        ),
-                      );
+                      setState(() {
+                        _selectedIndex = 1;
+                        _selectedMaster = null;
+                      });
                     },
                   ),
-
                   const SizedBox(height: 8),
-
-                  // Applicants
                   _menuItem(
                     icon: Icons.people_outline,
                     title: 'Applicants',
-                    selected: false,
-                    onTap: () {},
+                    selected: _selectedIndex == 2 && _selectedMaster == null,
+                    onTap: () {
+                      setState(() {
+                        _selectedIndex = 2;
+                        _selectedMaster = null;
+                      });
+                    },
                   ),
                   const SizedBox(height: 8),
-
-                  // ===== MASTERS WITH DROPDOWN =====
                   _buildMasterMenuItem(),
                 ],
               ),
@@ -213,7 +256,7 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
     );
   }
 
-  // ===== MASTER MENU WITH DROPDOWN - ALL CORRECT TABLE NAMES =====
+  // ===== MASTER MENU WITH DROPDOWN =====
   Widget _buildMasterMenuItem() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -243,228 +286,45 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
             side: BorderSide(color: Colors.transparent),
           ),
           children: [
-            // Language
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              horizontalTitleGap: 0,
-              leading: const Icon(
-                Icons.translate,
-                size: 16,
-                color: AdminDashboardView.yellowColor,
-              ),
-              title: const Text(
-                'Language',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w400,
-                  color: AdminDashboardView.yellowColor,
-                ),
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        MasterPage(tableName: 'language', title: 'Language'),
-                  ),
-                );
-              },
+            _masterListItem(
+              icon: Icons.translate,
+              title: 'Language',
+              tableName: 'language',
             ),
-            // Industry
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              horizontalTitleGap: 0,
-              leading: const Icon(
-                Icons.business_outlined,
-                size: 16,
-                color: AdminDashboardView.yellowColor,
-              ),
-              title: const Text(
-                'Industry',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w400,
-                  color: AdminDashboardView.yellowColor,
-                ),
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        MasterPage(tableName: 'industry', title: 'Industry'),
-                  ),
-                );
-              },
+            _masterListItem(
+              icon: Icons.business_outlined,
+              title: 'Industry',
+              tableName: 'industry',
             ),
-            // Degree
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              horizontalTitleGap: 0,
-              leading: const Icon(
-                Icons.school_outlined,
-                size: 16,
-                color: AdminDashboardView.yellowColor,
-              ),
-              title: const Text(
-                'Degree',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w400,
-                  color: AdminDashboardView.yellowColor,
-                ),
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        MasterPage(tableName: 'degree', title: 'Degree'),
-                  ),
-                );
-              },
+            _masterListItem(
+              icon: Icons.school_outlined,
+              title: 'Degree',
+              tableName: 'degree',
             ),
-            // Education Level
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              horizontalTitleGap: 0,
-              leading: const Icon(
-                Icons.auto_stories_outlined,
-                size: 16,
-                color: AdminDashboardView.yellowColor,
-              ),
-              title: const Text(
-                'Education Level',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w400,
-                  color: AdminDashboardView.yellowColor,
-                ),
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MasterPage(
-                      tableName: 'education_level',
-                      title: 'Education Level',
-                    ),
-                  ),
-                );
-              },
+            _masterListItem(
+              icon: Icons.auto_stories_outlined,
+              title: 'Education Level',
+              tableName: 'education_level',
             ),
-            // Employment
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              horizontalTitleGap: 0,
-              leading: const Icon(
-                Icons.work_history_outlined,
-                size: 16,
-                color: AdminDashboardView.yellowColor,
-              ),
-              title: const Text(
-                'Employment',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w400,
-                  color: AdminDashboardView.yellowColor,
-                ),
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MasterPage(
-                      tableName: 'employment_type',
-                      title: 'Employment',
-                    ),
-                  ),
-                );
-              },
+            _masterListItem(
+              icon: Icons.work_history_outlined,
+              title: 'Employment',
+              tableName: 'employment_type',
             ),
-            // Job Role
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              horizontalTitleGap: 0,
-              leading: const Icon(
-                Icons.assignment_outlined,
-                size: 16,
-                color: AdminDashboardView.yellowColor,
-              ),
-              title: const Text(
-                'Job Role',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w400,
-                  color: AdminDashboardView.yellowColor,
-                ),
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        MasterPage(tableName: 'job_role', title: 'Job Role'),
-                  ),
-                );
-              },
+            _masterListItem(
+              icon: Icons.assignment_outlined,
+              title: 'Job Role',
+              tableName: 'job_role',
             ),
-            // Major Specification
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              horizontalTitleGap: 0,
-              leading: const Icon(
-                Icons.science_outlined,
-                size: 16,
-                color: AdminDashboardView.yellowColor,
-              ),
-              title: const Text(
-                'Major Specification',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w400,
-                  color: AdminDashboardView.yellowColor,
-                ),
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MasterPage(
-                      tableName: 'major_specialization',
-                      title: 'Major Specification',
-                    ),
-                  ),
-                );
-              },
+            _masterListItem(
+              icon: Icons.science_outlined,
+              title: 'Major Specification',
+              tableName: 'major_specialization',
             ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              horizontalTitleGap: 0,
-              leading: const Icon(
-                Icons.science_outlined,
-                size: 16,
-                color: AdminDashboardView.yellowColor,
-              ),
-              title: const Text(
-                'Location',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w400,
-                  color: AdminDashboardView.yellowColor,
-                ),
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MasterPage(
-                      tableName: 'location',
-                      title: 'Location',
-                    ),
-                  ),
-                );
-              },
+            _masterListItem(
+              icon: Icons.location_on_outlined,
+              title: 'Location',
+              tableName: 'location',
             ),
           ],
         ),
@@ -472,6 +332,42 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
     );
   }
 
+  // ===== MASTER LIST ITEM =====
+  Widget _masterListItem({
+    required IconData icon,
+    required String title,
+    required String tableName,
+  }) {
+    final isSelected = _selectedMaster == tableName;
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      horizontalTitleGap: 0,
+      leading: Icon(
+        icon,
+        size: 16,
+        color: isSelected
+            ? AdminDashboardView.blueColor
+            : AdminDashboardView.yellowColor,
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontSize: 13,
+          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+          color: isSelected
+              ? AdminDashboardView.blueColor
+              : AdminDashboardView.yellowColor,
+        ),
+      ),
+      onTap: () {
+        setState(() {
+          _selectedMaster = tableName;
+        });
+      },
+    );
+  }
+
+  // ===== MENU ITEM =====
   Widget _menuItem({
     required IconData icon,
     required String title,
@@ -516,9 +412,16 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
       ),
     );
   }
+}
 
-  // =========================================================
-  Widget _buildDashboardContent() {
+// =========================================================
+// DASHBOARD CONTENT
+// =========================================================
+class _DashboardContent extends StatelessWidget {
+  const _DashboardContent();
+
+  @override
+  Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         return SingleChildScrollView(
@@ -537,7 +440,7 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
               const SizedBox(height: 4),
               const Text(
                 "Welcome back! Here's what's happening "
-                "with your applicants today.",
+                    "with your applicants today.",
                 style: TextStyle(fontSize: 12, color: Color(0xFF999999)),
               ),
               const SizedBox(height: 32),
@@ -551,20 +454,15 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
     );
   }
 
-  // =========================================================
   Widget _buildStatisticsGrid() {
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
         int columns = 3;
-        if (width < 900) {
-          columns = 2;
-        }
-        if (width < 600) {
-          columns = 1;
-        }
+        if (width < 900) columns = 2;
+        if (width < 600) columns = 1;
 
-        return Wrap(  // ← Changed from GridView to Wrap
+        return Wrap(
           spacing: 20,
           runSpacing: 20,
           children: [
@@ -632,13 +530,13 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
       child: Row(
         children: [
           Expanded(
-            child: ClipRect(  // ← ADD THIS - Prevents overflow
+            child: ClipRect(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  FittedBox(  // ← ADD THIS - Scales text to fit
+                  FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Text(
                       title,
@@ -704,7 +602,6 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
     );
   }
 
-  // =========================================================
   Widget _buildSecondRow() {
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -841,6 +738,23 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
             child: Icon(icon, color: iconColor, size: 22),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// =========================================================
+// APPLICANTS CONTENT
+// =========================================================
+class _ApplicantsContent extends StatelessWidget {
+  const _ApplicantsContent();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text(
+        'Applicants Page',
+        style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
       ),
     );
   }
