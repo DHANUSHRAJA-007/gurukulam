@@ -396,7 +396,7 @@ class MasterPage extends StatelessWidget {
     return ChangeNotifierProvider(
       key: ValueKey(tableName), // ← This forces recreation
       create: (_) =>
-          MasterViewModel(tableName: tableName, title: title)..loadMasters(),
+      MasterViewModel(tableName: tableName, title: title)..loadMasters(),
       child: _MasterPageContent(title: title),
     );
   }
@@ -531,10 +531,10 @@ class _MasterPageContentState extends State<_MasterPageContent> {
   // ==========================================================
 
   Widget _buildMasterForm(
-    BuildContext context,
-    MasterViewModel viewModel,
-    bool isMobile,
-  ) {
+      BuildContext context,
+      MasterViewModel viewModel,
+      bool isMobile,
+      ) {
     return Container(
       width: double.infinity,
 
@@ -737,10 +737,10 @@ class _MasterPageContentState extends State<_MasterPageContent> {
   // ==========================================================
 
   Widget _buildMasterList(
-    BuildContext context,
-    MasterViewModel viewModel,
-    bool isMobile,
-  ) {
+      BuildContext context,
+      MasterViewModel viewModel,
+      bool isMobile,
+      ) {
     final masters = _filteredMasters(viewModel.masters);
 
     return Container(
@@ -866,15 +866,15 @@ class _MasterPageContentState extends State<_MasterPageContent> {
 
           suffixIcon: _searchText.isNotEmpty
               ? IconButton(
-                  icon: const Icon(Icons.clear, size: 17),
-                  onPressed: () {
-                    _searchController.clear();
+            icon: const Icon(Icons.clear, size: 17),
+            onPressed: () {
+              _searchController.clear();
 
-                    setState(() {
-                      _searchText = '';
-                    });
-                  },
-                )
+              setState(() {
+                _searchText = '';
+              });
+            },
+          )
               : null,
 
           filled: true,
@@ -924,11 +924,11 @@ class _MasterPageContentState extends State<_MasterPageContent> {
   // ==========================================================
 
   Widget _buildTable(
-    BuildContext context,
-    MasterViewModel viewModel,
-    List<MasterModel> masters,
-    bool isMobile,
-  ) {
+      BuildContext context,
+      MasterViewModel viewModel,
+      List<MasterModel> masters,
+      bool isMobile,
+      ) {
     if (isMobile) {
       return Column(
         children: List.generate(masters.length, (index) {
@@ -1037,11 +1037,11 @@ class _MasterPageContentState extends State<_MasterPageContent> {
   // ==========================================================
 
   Widget _buildTableRow(
-    BuildContext context,
-    MasterViewModel viewModel,
-    MasterModel master,
-    int index,
-  ) {
+      BuildContext context,
+      MasterViewModel viewModel,
+      MasterModel master,
+      int index,
+      ) {
     return Container(
       height: 62,
 
@@ -1234,11 +1234,11 @@ class _MasterPageContentState extends State<_MasterPageContent> {
   // ==========================================================
 
   Widget _buildMobileCard(
-    BuildContext context,
-    MasterViewModel viewModel,
-    MasterModel master,
-    int index,
-  ) {
+      BuildContext context,
+      MasterViewModel viewModel,
+      MasterModel master,
+      int index,
+      ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
 
@@ -1452,10 +1452,10 @@ class _MasterPageContentState extends State<_MasterPageContent> {
   // ==========================================================
 
   void _showDeleteConfirmation(
-    BuildContext context,
-    MasterModel master,
-    MasterViewModel viewModel,
-  ) {
+      BuildContext context,
+      MasterModel master,
+      MasterViewModel viewModel,
+      ) {
     showDialog(
       context: context,
 
@@ -1465,7 +1465,7 @@ class _MasterPageContentState extends State<_MasterPageContent> {
 
           content: Text(
             'Are you sure you want to delete '
-            '"${master.name}"?',
+                '"${master.name}"?',
           ),
 
           actions: [
@@ -1502,10 +1502,10 @@ class _MasterPageContentState extends State<_MasterPageContent> {
   // ==========================================================
 
   void _showToggleConfirmation(
-    BuildContext context,
-    MasterModel master,
-    MasterViewModel viewModel,
-  ) {
+      BuildContext context,
+      MasterModel master,
+      MasterViewModel viewModel,
+      ) {
     final bool active = master.status;
 
     final String action = active ? 'deactivate' : 'activate';
@@ -1517,12 +1517,12 @@ class _MasterPageContentState extends State<_MasterPageContent> {
         return AlertDialog(
           title: Text(
             '${active ? 'Deactivate' : 'Activate'} '
-            '${widget.title}',
+                '${widget.title}',
           ),
 
           content: Text(
             'Are you sure you want to '
-            '$action "${master.name}"?',
+                '$action "${master.name}"?',
           ),
 
           actions: [
